@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+       android:key="ipAddress"
+       android:summary="ip адрес сервера"
+       android:title="IP"
+       android:inputType="number|numberDecimal"
+       android:digits="0123456789.">
+    </EditTextPreference>
+
+    <EditTextPreference
+        android:key="port"
+        android:summary="порт сервера"
+        android:title="Port number"
+        android:inputType="number|numberDecimal"
+        android:digits="0123456789">
+    </EditTextPreference>
+
+    <EditTextPreference
+        android:key="dbName"
+        android:summary="имя базы данных"
+        android:title="Database">
+    </EditTextPreference>
+
+    <EditTextPreference
+        android:key="login"
+        android:summary="имя пользователя"
+        android:title="Login">
+    </EditTextPreference>
+
+    <EditTextPreference
+        android:key="password"
+        android:summary="пароль"
+        android:title="Password">
+    </EditTextPreference>
+
+
+</PreferenceScreen>
