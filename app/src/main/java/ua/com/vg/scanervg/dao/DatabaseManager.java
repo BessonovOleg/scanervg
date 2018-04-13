@@ -99,7 +99,7 @@ public class DatabaseManager {
     }
 
     public Entity getEntityByCode(String code, ScanKind scanKind){
-        Entity result = new Entity(0,"");
+        Entity result = new Entity(0,"","");
         Statement st = null;
         ResultSet rs = null;
         String storedProcedureName = "";
@@ -125,6 +125,7 @@ public class DatabaseManager {
                 while (rs.next()) {
                     result.setEntid(rs.getInt("ID"));
                     result.setEntname(rs.getString("NAME"));
+                    result.setEntCode(rs.getString("CODE"));
                 }
             }
         }catch (SQLException ex){

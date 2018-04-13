@@ -8,6 +8,14 @@ public class Document {
     private Entity makedEntity;
     private List<RowContent> contentList;
 
+    public List<RowContent> getContentList() {
+        return contentList;
+    }
+
+    public void setContentList(List<RowContent> contentList) {
+        this.contentList = contentList;
+    }
+
     public Document() {
         contentList = new ArrayList<>();
         docId = 0;

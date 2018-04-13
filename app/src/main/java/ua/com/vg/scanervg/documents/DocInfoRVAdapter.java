@@ -36,7 +36,7 @@ public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocI
 
     @Override
     public int getItemCount() {
-        return mdocInfoList.size();///
+        return mdocInfoList.size();
     }
 
     public DocInfoRVAdapter(Context context, List<DocInfo> data){

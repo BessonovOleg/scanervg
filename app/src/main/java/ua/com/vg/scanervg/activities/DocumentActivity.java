@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -15,12 +18,12 @@ import com.google.zxing.integration.android.IntentResult;
 
 import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.dao.DatabaseManager;
+import ua.com.vg.scanervg.documents.DocContentsRVAdapter;
 import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.documents.Entity;
 import ua.com.vg.scanervg.utils.ScanKind;
 
-public class DocumentActivity extends AppCompatActivity {
-
+public class DocumentActivity extends AppCompatActivity implements DocContentsRVAdapter.ItemClickListener{
     TextView lbMakedEntity;
     ImageButton btnScanMakedEntity;
     ImageButton btnScanContentdEntity;
@@ -28,6 +31,8 @@ public class DocumentActivity extends AppCompatActivity {
     Context ctx;
     Document document;
     DbEntity dbEntity;
+    RecyclerView docContents;
+    DocContentsRVAdapter docContentsRVAdapter;
     int docID;
 
     @Override
@@ -36,6 +41,7 @@ public class DocumentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_document);
         ctx = MainActivity.getContext();
         lbMakedEntity = (TextView) findViewById(R.id.lbMakedEntity);
+        docContents = (RecyclerView) findViewById(R.id.docContents);
         btnScanMakedEntity = (ImageButton) findViewById(R.id.btnScanMakedEntity);
         btnScanMakedEntity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,10 +62,26 @@ public class DocumentActivity extends AppCompatActivity {
         docID = intent.getIntExtra("DOCID",0);
         if(docID == 0){
             document = new Document();
-        }else
-        {
+        }else {
             document = getDocumentByID(docID);
         }
+
+
+
+        docContents.setLayoutManager(new LinearLayoutManager(this));
+        docContentsRVAdapter = new DocContentsRVAdapter(this,document.getContentList());
+        docContentsRVAdapter.setClickListener(this);
+        docContents.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        docContents.setAdapter(docContentsRVAdapter);
+        /*
+                rvDocList.setLayoutManager(new LinearLayoutManager(ctx));
+                docInfoRVAdapter = new DocInfoRVAdapter(ctx, docInfoList);
+                docInfoRVAdapter.setClickListener(MainActivity.this);
+                rvDocList.addItemDecoration(new DividerItemDecoration(ctx, DividerItemDecoration.VERTICAL));
+                rvDocList.setAdapter(docInfoRVAdapter);
+         */
+
+
 
     }
 
@@ -82,6 +104,10 @@ public class DocumentActivity extends AppCompatActivity {
         integrator.initiateScan();
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -89,19 +115,25 @@ public class DocumentActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(result != null){
             if(result.getContents() != null) {
-                //получение кода  result.getContents()
-                if(scanKind == ScanKind.scanMakedEntity){
-                    dbEntity = new DbEntity(ctx);
-                    Entity entity = new Entity(0,"");
+                dbEntity = new DbEntity(ctx);
+                Entity entity = new Entity(0,"","");
                     try{
                         dbEntity.execute(result.getContents());
                         entity = dbEntity.get();
-                        lbMakedEntity.setText(entity.getEntname());
                     }catch (Exception e){
                         Toast.makeText(DocumentActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                     }
-                }
+                    if(entity.getEntid() > 0 ){
+                        if(scanKind == ScanKind.scanMakedEntity){
+                            document.setMakedEntity(entity);
+                            lbMakedEntity.setText(entity.getEntname());
+                        }
 
+                        if(scanKind == ScanKind.scanContentEntity){
+                            document.addRow(entity,1);
+                            docContentsRVAdapter.notifyDataSetChanged();
+                        }
+                    }
             }
         }else {
             super.onActivityResult(requestCode,resultCode,data);
@@ -118,6 +150,7 @@ public class DocumentActivity extends AppCompatActivity {
             this.ctx = ctx;
         }
 
+        //TODO Добавить индикатор прогресса в активити документа
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -134,7 +167,7 @@ public class DocumentActivity extends AppCompatActivity {
 
         @Override
         protected Entity doInBackground(String... strings) {
-            Entity result = new Entity(0,"");
+            Entity result = new Entity(0,"","");
             try {
                 DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
                 result = dbDatabaseManager.getEntityByCode(strings[0],scKind);

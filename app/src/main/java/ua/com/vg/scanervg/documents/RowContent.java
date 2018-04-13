@@ -7,6 +7,25 @@ public class RowContent {
     private double qty;
     private int rowno;
 
+    public String getEntName(){
+        String result = "<не указан>";
+        if(entity != null){
+            result = entity.getEntname();
+        }
+        return result;
+    }
+
+    public String getEntCode(){
+        String result = "<не указан>";
+
+        if(entity != null ){
+            result = entity.getEntCode();
+        }
+
+        return result;
+    }
+
+
     public RowContent() {
         qty = 0;
     }
