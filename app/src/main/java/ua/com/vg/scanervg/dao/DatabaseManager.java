@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.com.vg.scanervg.documents.DocInfo;
+import ua.com.vg.scanervg.documents.Entity;
+import ua.com.vg.scanervg.utils.ScanKind;
 
 public class DatabaseManager {
     private Connection conncetion;
@@ -91,10 +93,51 @@ public class DatabaseManager {
                 }catch (Exception e){
                     throw new RuntimeException(e);
                 }
+            }
+        }
+        return result;
+    }
 
+    public Entity getEntityByCode(String code, ScanKind scanKind){
+        Entity result = new Entity(0,"");
+        Statement st = null;
+        ResultSet rs = null;
+        String storedProcedureName = "";
+
+        if(scanKind == ScanKind.scanContentEntity){
+            storedProcedureName = "getAndroidContentEntity";
+        }else if(scanKind == ScanKind.scanMakedEntity){
+            storedProcedureName = "getAndroidMakedEntity";
+        }
+
+        if(conncetion == null){
+            try {
+                connect();
+            }catch (SQLException|ClassNotFoundException ex){
+                throw new RuntimeException(ex);
             }
         }
 
+        try{
+            st = conncetion.createStatement();
+            rs = st.executeQuery("exec " + storedProcedureName + " '" + code + "'");
+            if (rs != null) {
+                while (rs.next()) {
+                    result.setEntid(rs.getInt("ID"));
+                    result.setEntname(rs.getString("NAME"));
+                }
+            }
+        }catch (SQLException ex){
+            throw new RuntimeException();
+        }finally {
+            if(st!= null){
+                try {
+                    st.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         return result;
     }
 

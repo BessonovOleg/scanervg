@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
     ImageButton btnAddDocument;
     private static Context context;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,68 +51,30 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
                 startActivityForResult(intent,0);
             }
         });
-
         btnAddDocument = (ImageButton) findViewById(R.id.addDocument);
 
         btnAddDocument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,DocumentActivity.class);
+                intent.putExtra("DOCID",0);
                 startActivityForResult(intent,1);
             }
         });
-
         fillListDoc();
-
-
-/*
-                Start scaner
-
-                IntentIntegrator integrator = new IntentIntegrator(MainActivity.this);
-                integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
-                integrator.setPrompt("Наведите камеру на код");
-                integrator.setCameraId(0);
-                integrator.setOrientationLocked(true);
-                integrator.setBeepEnabled(true);
-                integrator.setBarcodeImageEnabled(false);
-                integrator.setCaptureActivity(CaptureActivityPortrait.class);
-                integrator.initiateScan();
- */
-        //------------------------------------------------------------------
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //После вызова настроек или работы с докуменотом перезаполним список документов
+        //TODO добавь проверку. если нет настроек. не грузить
         fillListDoc();
-
-        /*
-Read scaner result
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
-        if(result != null){
-            if(result.getContents() == null) {
-               // Toast.makeText(this,"Cancelled", Toast.LENGTH_SHORT).show();
-            }else{
-                //получение кода  result.getContents()
-                //Toast.makeText(this,"Ok) Code = " + result.getContents(),Toast.LENGTH_SHORT).show();
-//                DatabaseManager dbManager = new DatabaseManager();
-//                dbManager.test(MainActivity.this,tv,result.getContents());
-                //DbTask dbTask = new DbTask();
-                //dbTask.execute(result.getContents());
-            }
-        }else {
-            super.onActivityResult(requestCode,resultCode,data);
-        }
-    */
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this,docInfoRVAdapter.getItem(position).getDocName(),Toast.LENGTH_SHORT).show();
-        //System.out.println(docInfoRVAdapter.getItem(position).getDocName());
-        //Здесь будем открывать документ
+        Intent intent = new Intent(MainActivity.this,DocumentActivity.class);
+        intent.putExtra("DOCID",docInfoRVAdapter.getItem(position).getDocID());
+        startActivityForResult(intent,0);
     }
 
     private void fillListDoc(){

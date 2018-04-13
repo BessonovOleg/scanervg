@@ -16,18 +16,19 @@ import com.google.zxing.integration.android.IntentResult;
 import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.documents.Document;
+import ua.com.vg.scanervg.documents.Entity;
+import ua.com.vg.scanervg.utils.ScanKind;
 
 public class DocumentActivity extends AppCompatActivity {
 
     TextView lbMakedEntity;
     ImageButton btnScanMakedEntity;
     ImageButton btnScanContentdEntity;
-    int kindScan = 0;
-    int kindScanMakedEntity = 1;
-    int kindScanContents = 2;
+    ScanKind scanKind;
     Context ctx;
     Document document;
-    DbWorker dbWorker;
+    DbEntity dbEntity;
+    int docID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,24 +40,37 @@ public class DocumentActivity extends AppCompatActivity {
         btnScanMakedEntity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanCode(kindScanMakedEntity);
+                scanCode(ScanKind.scanMakedEntity);
             }
         });
-
 
         btnScanContentdEntity = (ImageButton) findViewById(R.id.btnScanContentdEntity);
         btnScanContentdEntity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbWorker = new DbWorker(ctx);
-                dbWorker.execute();
+                scanCode(ScanKind.scanContentEntity);
             }
         });
 
+        Intent intent = getIntent();
+        docID = intent.getIntExtra("DOCID",0);
+        if(docID == 0){
+            document = new Document();
+        }else
+        {
+            document = getDocumentByID(docID);
+        }
+
     }
 
-    private void scanCode(int kindScan){
-        this.kindScan = kindScan;
+    //TODO Implement method
+    public Document getDocumentByID(int docID){
+        Document result = new Document();
+        return result;
+    }
+
+    private void scanCode(ScanKind scanKind){
+        this.scanKind = scanKind;
         IntentIntegrator integrator = new IntentIntegrator(DocumentActivity.this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
         integrator.setPrompt("Наведите камеру на код");
@@ -74,16 +88,20 @@ public class DocumentActivity extends AppCompatActivity {
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(result != null){
-            if(result.getContents() == null) {
-                // Toast.makeText(this,"Cancelled", Toast.LENGTH_SHORT).show();
-            }else{
+            if(result.getContents() != null) {
                 //получение кода  result.getContents()
-                //Toast.makeText(this,"Ok) Code = " + result.getContents(),Toast.LENGTH_SHORT).show();
-//                DatabaseManager dbManager = new DatabaseManager();
-//                dbManager.test(MainActivity.this,tv,result.getContents());
-                //DbTask dbTask = new DbTask();
-                //dbTask.execute(result.getContents());
-                Toast.makeText(this,result.getContents(),Toast.LENGTH_LONG).show();
+                if(scanKind == ScanKind.scanMakedEntity){
+                    dbEntity = new DbEntity(ctx);
+                    Entity entity = new Entity(0,"");
+                    try{
+                        dbEntity.execute(result.getContents());
+                        entity = dbEntity.get();
+                        lbMakedEntity.setText(entity.getEntname());
+                    }catch (Exception e){
+                        Toast.makeText(DocumentActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                }
+
             }
         }else {
             super.onActivityResult(requestCode,resultCode,data);
@@ -91,8 +109,44 @@ public class DocumentActivity extends AppCompatActivity {
 
     }
 
+    class DbEntity extends AsyncTask<String,Void,Entity>{
+        Context ctx;
+        ScanKind scKind;
+        String errorMessage = "";
 
-    class DbWorker extends AsyncTask<Void,Void,Void>{
+        public DbEntity(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            scKind = scanKind;
+        }
+
+        @Override
+        protected void onPostExecute(Entity entity) {
+            super.onPostExecute(entity);
+            if(errorMessage.length() > 0){
+                Toast.makeText(DocumentActivity.this,errorMessage,Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected Entity doInBackground(String... strings) {
+            Entity result = new Entity(0,"");
+            try {
+                DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
+                result = dbDatabaseManager.getEntityByCode(strings[0],scKind);
+            }catch (Exception e){
+                errorMessage = e.getMessage();
+            }
+            return result;
+        }
+    }
+
+    /*
+    class DbEntity extends AsyncTask<Void,Void,Void>{
         String error = "";
         String result = "";
         Context context;
@@ -131,5 +185,7 @@ public class DocumentActivity extends AppCompatActivity {
             return null;
         }
     }
+*/
+
 
 }
