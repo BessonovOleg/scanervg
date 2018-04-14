@@ -7,6 +7,7 @@ public class Document {
     private int docId;
     private Entity makedEntity;
     private List<RowContent> contentList;
+    private String docMemo;
 
     public List<RowContent> getContentList() {
         return contentList;
@@ -19,6 +20,7 @@ public class Document {
     public Document() {
         contentList = new ArrayList<>();
         docId = 0;
+        docMemo = "";
     }
 
     public Entity getMakedEntity() {
@@ -55,5 +57,13 @@ public class Document {
 
     public void setDocId(int docId) {
         this.docId = docId;
+    }
+
+    public String getDocMemo() {
+        return docMemo;
+    }
+
+    public void setDocMemo(String docMemo) {
+        this.docMemo = docMemo;
     }
 }

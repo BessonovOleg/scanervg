@@ -9,7 +9,9 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,13 +26,19 @@ import ua.com.vg.scanervg.documents.Entity;
 import ua.com.vg.scanervg.utils.ScanKind;
 
 public class DocumentActivity extends AppCompatActivity implements DocContentsRVAdapter.ItemClickListener{
+    EditText editTextDocMemo;
     TextView lbMakedEntity;
     ImageButton btnScanMakedEntity;
     ImageButton btnScanContentdEntity;
+    ImageButton btnSaveDocument;
+    ProgressBar docProgressBar;
     ScanKind scanKind;
     Context ctx;
     Document document;
+
     DbEntity dbEntity;
+    DocumentLoader documentLoader;
+
     RecyclerView docContents;
     DocContentsRVAdapter docContentsRVAdapter;
     int docID;
@@ -39,9 +47,21 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document);
+
         ctx = MainActivity.getContext();
-        lbMakedEntity = (TextView) findViewById(R.id.lbMakedEntity);
-        docContents = (RecyclerView) findViewById(R.id.docContents);
+        lbMakedEntity   = (TextView)     findViewById(R.id.lbMakedEntity);
+        docContents     = (RecyclerView) findViewById(R.id.docContents);
+        docProgressBar  = (ProgressBar)  findViewById(R.id.docProgressBar);
+        editTextDocMemo = (EditText)     findViewById(R.id.editTextDocMemo);
+
+        btnSaveDocument = (ImageButton) findViewById(R.id.btnSaveDocument);
+        btnSaveDocument.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveDocument();
+            }
+        });
+
         btnScanMakedEntity = (ImageButton) findViewById(R.id.btnScanMakedEntity);
         btnScanMakedEntity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,28 +86,33 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
             document = getDocumentByID(docID);
         }
 
-
+        if(document.getMakedEntity() != null){
+            lbMakedEntity.setText(document.getMakedEntity().getEntname());
+        }
+        editTextDocMemo.setText(document.getDocMemo());
 
         docContents.setLayoutManager(new LinearLayoutManager(this));
         docContentsRVAdapter = new DocContentsRVAdapter(this,document.getContentList());
         docContentsRVAdapter.setClickListener(this);
         docContents.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         docContents.setAdapter(docContentsRVAdapter);
-        /*
-                rvDocList.setLayoutManager(new LinearLayoutManager(ctx));
-                docInfoRVAdapter = new DocInfoRVAdapter(ctx, docInfoList);
-                docInfoRVAdapter.setClickListener(MainActivity.this);
-                rvDocList.addItemDecoration(new DividerItemDecoration(ctx, DividerItemDecoration.VERTICAL));
-                rvDocList.setAdapter(docInfoRVAdapter);
-         */
+    }
 
 
+    //TODO Implement this method
+    private void saveDocument(){
 
     }
 
-    //TODO Implement method
     public Document getDocumentByID(int docID){
         Document result = new Document();
+        try {
+            documentLoader = new DocumentLoader(ctx);
+            documentLoader.execute(docID);
+            result = documentLoader.get();
+        }catch (Exception e){
+            Toast.makeText(DocumentActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+        }
         return result;
     }
 
@@ -104,6 +129,7 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
         integrator.initiateScan();
     }
 
+    //TODO сделать диалог для редактирования - удаления строки документа
     @Override
     public void onItemClick(View view, int position) {
 
@@ -141,6 +167,44 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
 
     }
 
+    //TODO реадизовать метод
+    class DocumentLoader extends AsyncTask<Integer,Void,Document>{
+        Context ctx;
+        String errorMessage = "";
+
+        public DocumentLoader(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            docProgressBar.setVisibility(ProgressBar.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Document document) {
+            super.onPostExecute(document);
+            docProgressBar.setVisibility(ProgressBar.INVISIBLE);
+            if(errorMessage.length() > 0){
+                Toast.makeText(DocumentActivity.this,errorMessage,Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected Document doInBackground(Integer... params) {
+            Document result = new Document();
+            try {
+                DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
+                result = dbDatabaseManager.getDocumentByID(params[0]);
+            }catch (Exception e){
+                errorMessage = e.getMessage();
+            }
+            return result;
+        }
+    }
+
+
     class DbEntity extends AsyncTask<String,Void,Entity>{
         Context ctx;
         ScanKind scKind;
@@ -150,7 +214,6 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
             this.ctx = ctx;
         }
 
-        //TODO Добавить индикатор прогресса в активити документа
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -177,48 +240,4 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
             return result;
         }
     }
-
-    /*
-    class DbEntity extends AsyncTask<Void,Void,Void>{
-        String error = "";
-        String result = "";
-        Context context;
-        DatabaseManager dbmanager;
-
-        public DbWorker(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            lbMakedEntity.setText("Подготовка");
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            if(error.length() > 0){
-                lbMakedEntity.setText(error);
-            }else {
-                lbMakedEntity.setText(result);
-            }
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                DatabaseManager dbDatabaseManager = new DatabaseManager(getApplicationContext());
-                result = dbDatabaseManager.getDocList().toString();
-            }catch (Exception e){
-                error = e.getMessage();
-            }
-            return null;
-        }
-    }
-*/
-
-
 }

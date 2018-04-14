@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,11 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.com.vg.scanervg.documents.DocInfo;
+import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.documents.Entity;
+import ua.com.vg.scanervg.documents.RowContent;
 import ua.com.vg.scanervg.utils.ScanKind;
 
 public class DatabaseManager {
-    private Connection conncetion;
+    private Connection connection;
     private Context ctx;
 
     public DatabaseManager(Context ctx) {
@@ -55,7 +58,7 @@ public class DatabaseManager {
       //  String login = "admin";
       //  String password = "123";
 
-        conncetion = DriverManager.getConnection(dbUrl, login, password);
+        connection = DriverManager.getConnection(dbUrl, login, password);
     }
 
     public List<DocInfo> getDocList(){
@@ -63,7 +66,7 @@ public class DatabaseManager {
         Statement st = null;
         ResultSet rs = null;
 
-        if(conncetion == null){
+        if(connection == null){
             try {
                 connect();
             }catch (SQLException|ClassNotFoundException ex){
@@ -72,7 +75,7 @@ public class DatabaseManager {
         }
 
         try{
-            st = conncetion.createStatement();
+            st = connection.createStatement();
             rs = st.executeQuery("exec getAndroidDocList");
             if (rs != null) {
                 while (rs.next()) {
@@ -110,7 +113,7 @@ public class DatabaseManager {
             storedProcedureName = "getAndroidMakedEntity";
         }
 
-        if(conncetion == null){
+        if(connection == null){
             try {
                 connect();
             }catch (SQLException|ClassNotFoundException ex){
@@ -119,7 +122,7 @@ public class DatabaseManager {
         }
 
         try{
-            st = conncetion.createStatement();
+            st = connection.createStatement();
             rs = st.executeQuery("exec " + storedProcedureName + " '" + code + "'");
             if (rs != null) {
                 while (rs.next()) {
@@ -129,7 +132,7 @@ public class DatabaseManager {
                 }
             }
         }catch (SQLException ex){
-            throw new RuntimeException();
+            throw new RuntimeException(ex);
         }finally {
             if(st!= null){
                 try {
@@ -142,64 +145,89 @@ public class DatabaseManager {
         return result;
     }
 
+    public Document getDocumentByID(int docID){
+        Document result = new Document();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<RowContent> rowContents = new ArrayList<>();
 
-    public void test(Context context, TextView tv,String code){
-        String res = "";
-        String log = "";
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
+        if(connection == null){
+            try {
+                connect();
+            }catch (SQLException|ClassNotFoundException ex){
+                throw new RuntimeException(ex);
+            }
         }
 
-        try {
-            Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            Connection con = null;
-            Statement st = null;
-            ResultSet rs = null;
+        //Get document header
+        try{
+            ps = connection.prepareStatement("exec getAndroidDocumentHeader ?");
+            ps.setInt(1,docID);
+            rs = ps.executeQuery();
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("jdbc:jtds:sqlserver://");
-            sb.append(sp.getString("ipAddress",""));
-            sb.append(":");
-            sb.append(sp.getString("port",""));
-            sb.append("/");
-            sb.append(sp.getString("dbName",""));
-            sb.append(";");
-            String dbUrl = sb.toString();
-            String login = sp.getString("login","");
-            String passw = sp.getString("password","");
+            if (rs != null) {
+                while (rs.next()) {
+                    Entity makedEntity = new Entity();
 
+                    makedEntity.setEntid(rs.getInt("ENTID"));
+                    makedEntity.setEntname(rs.getString("ENTNAME"));
+                    makedEntity.setEntCode(rs.getString("ENTCODE"));
+                    result.setMakedEntity(makedEntity);
 
-            try {
-                con = DriverManager.getConnection(dbUrl, login, passw);
-                if (con != null) {
-                    log += "\n connect";
-                    st = con.createStatement();
-                    rs = st.executeQuery("select name from Entity where code = '"+code+"'");
-                    if (rs != null) {
-                        while (rs.next()) {
-                            res = rs.getString(1);
-                            tv.setText(res);
-                        }
-                    }
-                }
-            } catch (SQLException e) {
-                log += "\n" + e.getMessage();
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (rs != null) rs.close();
-                    if (st != null) st.close();
-                    if (con != null) con.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e.getMessage());
+                    result.setDocId(rs.getInt("DOCID"));
+                    result.setDocMemo(rs.getString("DOCMEMO"));
                 }
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        }catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }finally {
+            if(ps!= null){
+                try {
+                    ps.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
         }
+
+        //Get document contents
+        ps = null;
+        rs = null;
+        try{
+            ps = connection.prepareStatement("exec getAndroidDocumentContent ?");
+            ps.setInt(1,docID);
+            rs = ps.executeQuery();
+
+            if (rs != null) {
+                while (rs.next()) {
+                    Entity entity = new Entity();
+                    RowContent rowContent = new RowContent();
+
+                    entity.setEntid(rs.getInt("ENTID"));
+                    entity.setEntname(rs.getString("ENTNAME"));
+                    entity.setEntCode(rs.getString("ENTCODE"));
+                    entity.setUnit(rs.getString("UN"));
+
+                    rowContent.setEntity(entity);
+                    rowContent.setRowno(rs.getInt("ROWNO"));
+                    rowContent.setQty(rs.getDouble("QTY"));
+
+                    rowContents.add(rowContent);
+                }
+            }
+        }catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }finally {
+            if(ps!= null){
+                try {
+                    ps.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        result.setContentList(rowContents);
+        return result;
     }
 
 }

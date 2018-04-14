@@ -4,6 +4,14 @@ public class Entity {
     private int entid;
     private String entname;
     private String entCode;
+    private String unit;
+
+    public Entity() {
+        entid = 0;
+        entname = "";
+        entCode = "";
+        unit = "";
+    }
 
     public Entity(int entid, String entname, String entCode) {
         this.entid = entid;
@@ -35,6 +43,13 @@ public class Entity {
         return entid == entity.entid;
     }
 
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     public String getEntCode() {
         return entCode;

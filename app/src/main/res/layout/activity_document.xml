@@ -55,6 +55,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <ProgressBar
+            android:id="@+id/docProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+
         <ImageButton
             android:id="@+id/btnScanContentdEntity"
             android:layout_width="wrap_content"
