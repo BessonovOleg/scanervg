@@ -5,5 +5,6 @@
     <string name="descr_overflow_add_document">Создать документ</string>
     <string name="labelMakedEntity">Готовая продукция</string>
     <string name="labelContents">Состав</string>
+    <string name="docmemo">Примечание</string>
 
 </resources>

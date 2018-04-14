@@ -2,7 +2,9 @@ package ua.com.vg.scanervg.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -66,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //TODO добавь проверку. если нет настроек. не грузить
         fillListDoc();
     }
 
@@ -78,6 +79,17 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
     }
 
     private void fillListDoc(){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+         if(sp.getString("ipAddress","").equals("") ||
+               sp.getString("port","").equals("")   ||
+               sp.getString("port","").equals("")   ||
+               sp.getString("dbName","").equals("") ||
+               sp.getString("login","").equals("")  ||
+               sp.getString("password","").equals("")){
+           return;
+        }
+
         docListWorker = new DocListWorker(this);
         if(docListWorker != null){
             docListWorker.execute();

@@ -31,7 +31,6 @@ public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocI
         DocInfo docInfo = mdocInfoList.get(position);
         holder.docName.setText(docInfo.getDocName());
         holder.docNumber.setText(docInfo.getDocNumber());
-    //    holder.docDate.setText(docInfo.getDocDate().toString());
     }
 
     @Override
