@@ -6,5 +6,17 @@
     <string name="labelMakedEntity">Готовая продукция</string>
     <string name="labelContents">Состав</string>
     <string name="docmemo">Примечание</string>
-
+    <string name="msgNotSetConfig">Не указаны настройки сервера</string>
+    <string name="B1">1</string>
+    <string name="B2">2</string>
+    <string name="B3">3</string>
+    <string name="B4">4</string>
+    <string name="B5">5</string>
+    <string name="B6">6</string>
+    <string name="B7">7</string>
+    <string name="B8">8</string>
+    <string name="B9">9</string>
+    <string name="B0">0</string>
+    <string name="BDot">.</string>
+    <string name="BOK">OK</string>
 </resources>

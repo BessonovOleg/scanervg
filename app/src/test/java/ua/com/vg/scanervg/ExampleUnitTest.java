@@ -23,12 +23,12 @@ public class ExampleUnitTest {
 
     @Test
     public void testDb(){
-        MainActivity mainActivity = new MainActivity();
-        DatabaseManager db = new DatabaseManager(mainActivity);
-        List<DocInfo> docInfoList = db.getDocList();
+      //  MainActivity mainActivity = new MainActivity();
+      //  DatabaseManager db = new DatabaseManager(mainActivity);
+     //   List<DocInfo> docInfoList = db.getDocList();
 
-        for(DocInfo d:docInfoList){
-            System.out.println(d.toString());
-        }
+   //     for(DocInfo d:docInfoList){
+     //       System.out.println(d.toString());
+      //  }
     }
 }

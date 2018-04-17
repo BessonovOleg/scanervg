@@ -28,7 +28,10 @@
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.SettingActivity" />
-        <activity android:name=".activities.DocumentActivity"></activity>
+        <activity android:name=".activities.DocumentActivity" />
+        <activity android:name=".activities.DocContentEdit"
+            android:theme="@style/Theme.DialogDocumentContent">
+        </activity>
     </application>
 
 </manifest>

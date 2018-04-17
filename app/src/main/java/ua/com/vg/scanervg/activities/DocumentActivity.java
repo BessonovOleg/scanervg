@@ -35,13 +35,15 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
     ScanKind scanKind;
     Context ctx;
     Document document;
-
+    private int selectedPosition = -1;
     DbEntity dbEntity;
     DocumentLoader documentLoader;
 
     RecyclerView docContents;
     DocContentsRVAdapter docContentsRVAdapter;
     int docID;
+
+    private final int EDIT_CONTENT_CODE = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,11 +134,27 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
     //TODO сделать диалог для редактирования - удаления строки документа
     @Override
     public void onItemClick(View view, int position) {
-
+        selectedPosition = position;
+        Intent intent = new Intent(DocumentActivity.this,DocContentEdit.class);
+        intent.putExtra("QTY",docContentsRVAdapter.getItem(position).getQty());
+        startActivityForResult(intent,EDIT_CONTENT_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == EDIT_CONTENT_CODE){
+            if(resultCode == RESULT_FIRST_USER){
+                docContentsRVAdapter.removeItem(selectedPosition);
+                selectedPosition = -1;
+                return;
+            }else if(data != null && selectedPosition > -1){
+                double qty = Double.valueOf(data.getStringExtra("QTY"));
+                docContentsRVAdapter.getItem(selectedPosition).setQty(qty);
+                docContentsRVAdapter.notifyDataSetChanged();
+                return;
+            }
+        }
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(result != null){
@@ -154,7 +172,6 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
                             document.setMakedEntity(entity);
                             lbMakedEntity.setText(entity.getEntname());
                         }
-
                         if(scanKind == ScanKind.scanContentEntity){
                             document.addRow(entity,1);
                             docContentsRVAdapter.notifyDataSetChanged();
@@ -167,7 +184,6 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
 
     }
 
-    //TODO реадизовать метод
     class DocumentLoader extends AsyncTask<Integer,Void,Document>{
         Context ctx;
         String errorMessage = "";

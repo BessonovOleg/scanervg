@@ -87,8 +87,12 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
                sp.getString("dbName","").equals("") ||
                sp.getString("login","").equals("")  ||
                sp.getString("password","").equals("")){
+           Toast.makeText(this,R.string.msgNotSetConfig,Toast.LENGTH_SHORT).show();
+           btnAddDocument.setEnabled(false);
            return;
         }
+
+        btnAddDocument.setEnabled(true);
 
         docListWorker = new DocListWorker(this);
         if(docListWorker != null){

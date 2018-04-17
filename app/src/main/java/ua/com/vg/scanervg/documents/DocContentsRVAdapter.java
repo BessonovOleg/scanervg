@@ -76,4 +76,9 @@ public class DocContentsRVAdapter extends RecyclerView.Adapter<DocContentsRVAdap
     public RowContent getItem(int index){
         return mRowContentsList.get(index);
     }
+
+    public void removeItem(int index){
+        mRowContentsList.remove(index);
+        notifyItemRemoved(index);
+    }
 }
