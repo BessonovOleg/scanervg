@@ -9,21 +9,39 @@
     android:orientation="horizontal"
     tools:context=".activities.DocContentEdit">
 
+
+
+    <TextView
+        android:id="@+id/tvDocContentEntName"
+        android:layout_columnSpan="3"
+        android:layout_gravity="fill"
+        android:lines="2"
+        android:textColor="@android:color/background_dark"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+
     <ImageButton
         android:layout_column="3"
         android:layout_gravity="fill"
         android:id="@+id/imgBtnDeleteContentRow"
         android:contentDescription=""
         android:src="@android:drawable/ic_menu_delete" />
-    <TextView
-        android:id="@+id/tvDocContentEntName"
-        android:layout_columnSpan="4"
-        android:layout_gravity="fill"
-        android:lines="2" />
+
+
     <TextView
         android:id="@+id/tvDocContentQty"
         android:layout_columnSpan="4"
-        android:layout_gravity="fill" />
+        android:layout_gravity="fill"
+        android:background="@drawable/border"
+        android:textColor="@android:color/black"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginBottom="5dp"
+        android:paddingRight="3dp"
+        android:paddingLeft="3dp"
+        android:gravity="end"
+        android:textSize="18sp" />
     <Button
         android:id="@+id/b1"
         android:text="@string/B1"

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,7 +16,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import ua.com.vg.scanervg.documents.DocInfo;
 import ua.com.vg.scanervg.documents.Document;
@@ -230,4 +234,73 @@ public class DatabaseManager {
         return result;
     }
 
+    public int saveDocument(Document document){
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int result = -1;
+        List<RowContent> rowContents = new ArrayList<>();
+
+        if(document == null){
+            return result;
+        }
+        rowContents = document.getContentList();
+
+        if(connection == null){
+            try {
+                connect();
+            }catch (SQLException|ClassNotFoundException ex){
+                throw new RuntimeException(ex);
+            }
+        }
+
+        //Save caption
+        try{
+            ps = connection.prepareStatement("exec AndroidUpdateDocuments ?,?,?");
+            ps.setInt(1,document.getDocId());
+            ps.setInt(2,document.getMakedEntity().getEntid());
+            ps.setString(3,document.getDocMemo());
+            rs = ps.executeQuery();
+            if (rs != null) {
+                while (rs.next()) {
+                    document.setDocId(rs.getInt("DOCID"));
+                    result = rs.getInt("DOCID");
+                }
+            }
+        }catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }finally {
+            if(ps!= null){
+                try {
+                    ps.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        //Save contents
+        if(rowContents.size() > 0){
+            for(RowContent rc:rowContents){
+                try{
+                    ps = connection.prepareStatement("exec AndroidUpdateJournal ?,?,?,?");
+                    ps.setInt(1,document.getDocId());
+                    ps.setInt(2,rc.getRowno());
+                    ps.setInt(3,rc.getEntityID());
+                    ps.setDouble(4,rc.getQty());
+                    ps.executeQuery();
+                }catch (SQLException ex){
+                    throw new RuntimeException(ex);
+                }finally {
+                    if(ps!= null){
+                        try {
+                            ps.close();
+                        }catch (Exception e){
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }

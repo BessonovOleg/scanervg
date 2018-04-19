@@ -37,6 +37,7 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
     Document document;
     private int selectedPosition = -1;
     DbEntity dbEntity;
+    DbSaveDocument dbSaveDocument;
     DocumentLoader documentLoader;
 
     RecyclerView docContents;
@@ -101,9 +102,14 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
     }
 
 
-    //TODO Implement this method
     private void saveDocument(){
-
+        document.setDocMemo(editTextDocMemo.getText().toString());
+        try {
+            dbSaveDocument = new DbSaveDocument(ctx);
+            dbSaveDocument.execute(document);
+        }catch (Exception e){
+            Toast.makeText(DocumentActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+        }
     }
 
     public Document getDocumentByID(int docID){
@@ -131,12 +137,12 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
         integrator.initiateScan();
     }
 
-    //TODO сделать диалог для редактирования - удаления строки документа
     @Override
     public void onItemClick(View view, int position) {
         selectedPosition = position;
         Intent intent = new Intent(DocumentActivity.this,DocContentEdit.class);
         intent.putExtra("QTY",docContentsRVAdapter.getItem(position).getQty());
+        intent.putExtra("ENTNAME",docContentsRVAdapter.getItem(position).getEntName());
         startActivityForResult(intent,EDIT_CONTENT_CODE);
     }
 
@@ -176,6 +182,8 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
                             document.addRow(entity,1);
                             docContentsRVAdapter.notifyDataSetChanged();
                         }
+                    }else {
+                        Toast.makeText(this,R.string.msgEntityNotFound,Toast.LENGTH_SHORT).show();
                     }
             }
         }else {
@@ -254,6 +262,41 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
                 errorMessage = e.getMessage();
             }
             return result;
+        }
+    }
+
+    class DbSaveDocument extends AsyncTask<Document,Void,Void>{
+        Context ctx;
+        String errorMessage = "";
+
+        public DbSaveDocument(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            docProgressBar.setVisibility(ProgressBar.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            docProgressBar.setVisibility(ProgressBar.INVISIBLE);
+            if(errorMessage.length() > 0){
+                Toast.makeText(DocumentActivity.this,errorMessage,Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Document... documents) {
+            try {
+                DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
+                dbDatabaseManager.saveDocument(document);
+            }catch (Exception e){
+                errorMessage = e.getMessage();
+            }
+            return null;
         }
     }
 }

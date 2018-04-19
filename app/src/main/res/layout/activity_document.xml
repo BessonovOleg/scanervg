@@ -31,7 +31,9 @@
             android:lines="3"
             android:maxLines="3"
             android:singleLine="false"
-            android:textSize="16sp" />
+            android:textColor="@android:color/black"
+            android:textSize="14dp"
+            android:paddingLeft="10dp" />
 
         <ImageButton
             android:id="@+id/btnScanMakedEntity"

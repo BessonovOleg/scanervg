@@ -25,6 +25,12 @@ public class RowContent {
         return result;
     }
 
+    public int getEntityID(){
+        if(entity == null){
+            return 0;
+        }
+        return entity.getEntid();
+    }
 
     public RowContent() {
         qty = 0;
@@ -56,5 +62,14 @@ public class RowContent {
 
     public void addQty(double qtyAdd){
         qty += qtyAdd;
+    }
+
+    public String getUnitName(){
+        if (entity == null){
+            return "";
+        }else
+        {
+            return entity.getUnit();
+        }
     }
 }

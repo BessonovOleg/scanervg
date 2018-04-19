@@ -42,6 +42,7 @@ public class DocContentEdit extends Activity implements View.OnClickListener{
 
         Intent intent = getIntent();
         strQty = String.valueOf(intent.getDoubleExtra("QTY",0.00));
+        tvDocContentEntName.setText(intent.getStringExtra("ENTNAME"));
 
         b0 = (Button) findViewById(R.id.b0);
         b1 = (Button) findViewById(R.id.b1);

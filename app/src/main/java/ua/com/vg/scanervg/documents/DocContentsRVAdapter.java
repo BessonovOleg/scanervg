@@ -34,9 +34,8 @@ public class DocContentsRVAdapter extends RecyclerView.Adapter<DocContentsRVAdap
         RowContent rowContent = mRowContentsList.get(position);
         holder.tvRowContentEntName.setText(rowContent.getEntName());
         holder.tvRowContentEnCode.setText(rowContent.getEntCode());
+        holder.tvRowContentEntUnit.setText(rowContent.getUnitName());
         holder.tvRowContentQty.setText(String.valueOf(rowContent.getQty()));
-
-
     }
 
     @Override
@@ -47,12 +46,14 @@ public class DocContentsRVAdapter extends RecyclerView.Adapter<DocContentsRVAdap
     public class DocContentsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tvRowContentEntName;
         TextView tvRowContentEnCode;
+        TextView tvRowContentEntUnit;
         TextView tvRowContentQty;
 
         public DocContentsViewHolder(View itemView) {
             super(itemView);
             tvRowContentEntName = itemView.findViewById(R.id.tvRowContentEntName);
             tvRowContentEnCode  = itemView.findViewById(R.id.tvRowContentEnCode);
+            tvRowContentEntUnit = itemView.findViewById(R.id.tvRowContentEntUnit);
             tvRowContentQty     = itemView.findViewById(R.id.tvRowContentQty);
             itemView.setOnClickListener(this);
         }

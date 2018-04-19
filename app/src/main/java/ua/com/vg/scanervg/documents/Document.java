@@ -21,6 +21,7 @@ public class Document {
         contentList = new ArrayList<>();
         docId = 0;
         docMemo = "";
+        makedEntity = new Entity(0,"","");
     }
 
     public Entity getMakedEntity() {
@@ -36,6 +37,7 @@ public class Document {
             return;
         }
         int rowno = contentList.size() + 1;
+        boolean entExists = false;
 
         RowContent row = new RowContent();
         row.setRowno(rowno);
@@ -45,10 +47,12 @@ public class Document {
         for(RowContent rc:contentList){
             if(rc.getEntity().equals(entity)){
                 rc.addQty(1);
-                return;
-            }
+                entExists = true;
+             }
         }
-        contentList.add(row);
+        if(!entExists){
+            contentList.add(row);
+        }
     }
 
     public int getDocId() {
