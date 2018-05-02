@@ -8,11 +8,16 @@
     <string name="docmemo">Примечание</string>
     <string name="msgNotSetConfig">Не указаны настройки сервера</string>
     <string name="msgEntityNotFound">Код не найден</string>
+    <string name="msgAgentNotFound">Корреспондент не найден</string>
     <string name="symbolNumber">№</string>
     <string name="captionDialogSelectEntity">Выберите объект учета</string>
+    <string name="captionDialogSelectAgent">Выберите корреспондента</string>
     <string name="btnSelectDocKindDefaultText">Выберите тип документа</string>
     <string name="orderNoCaption">Заявка №</string>
     <string name="customer">Заказчик</string>
+    <string name="btnSelectEntityFromCatalog">Выбор из каталога</string>
+    <string name="btnScanEntity">Сканировать</string>
+    <string name="lbFooterOrder">Итого на сумму:</string>
     <string name="B1">1</string>
     <string name="B2">2</string>
     <string name="B3">3</string>

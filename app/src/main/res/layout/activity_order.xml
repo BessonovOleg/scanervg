@@ -17,7 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/orderNoCaption"
-            android:textSize="20sp"/>
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tvOrderDocNo"
@@ -43,16 +44,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/customer"
             android:layout_weight="0"
-            android:textSize="20sp"/>
+            android:text="@string/customer"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/edCustomer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:layout_weight="3"/>
+            android:layout_weight="3"
+            android:maxLength="255"
+            android:maxLines="2"
+            android:paddingLeft="5dp" />
 
         <ImageButton
             android:id="@+id/btnFindCustomer"
@@ -61,5 +65,87 @@
             android:src="@android:drawable/ic_menu_search" />
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/labelMakedEntity"
+        android:textColor="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSelectEntityFromCatalog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btnSelectEntityFromCatalog" />
+
+        <Button
+            android:id="@+id/btnScanEntity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btnScanEntity" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:id="@+id/orderContents"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:text="@string/lbFooterOrder"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/orderDocSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingLeft="5dp"
+            android:text="0.00"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editTextOrderMemo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_weight="2"
+            android:hint="@string/docmemo"
+            android:ems="15"
+            android:inputType="text" />
+
+        <ImageButton
+            android:id="@+id/btnSaveOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@android:drawable/ic_menu_save" />
+
+    </LinearLayout>
 
 </LinearLayout>

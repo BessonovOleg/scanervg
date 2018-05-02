@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
         btnAddDocument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,DocumentActivity.class);
+                Intent intent = getIntentByDocType(docKind);
                 intent.putExtra("DOCID",0);
                 startActivityForResult(intent,1);
             }
