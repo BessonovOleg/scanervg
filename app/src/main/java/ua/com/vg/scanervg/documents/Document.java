@@ -3,6 +3,9 @@ package ua.com.vg.scanervg.documents;
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.com.vg.scanervg.model.Agent;
+import ua.com.vg.scanervg.model.Entity;
+
 public class Document {
     private int docId;
     private Entity makedEntity;

@@ -1,4 +1,4 @@
-package ua.com.vg.scanervg.documents;
+package ua.com.vg.scanervg.model;
 
 public class Entity {
     private int entid;

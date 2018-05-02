@@ -25,7 +25,7 @@ import java.util.List;
 import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.documents.DocInfo;
-import ua.com.vg.scanervg.documents.DocInfoRVAdapter;
+import ua.com.vg.scanervg.adapters.DocInfoRVAdapter;
 import ua.com.vg.scanervg.utils.DocumentsKind;
 
 

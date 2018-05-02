@@ -1,11 +1,11 @@
 package ua.com.vg.scanervg.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,25 +17,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.com.vg.scanervg.R;
+import ua.com.vg.scanervg.adapters.OrderContentsRVAdapter;
 import ua.com.vg.scanervg.async.AgentFinder;
 import ua.com.vg.scanervg.async.DocumentLoader;
-import ua.com.vg.scanervg.documents.Agent;
+import ua.com.vg.scanervg.model.Agent;
 import ua.com.vg.scanervg.documents.Document;
 
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends AppCompatActivity implements OrderContentsRVAdapter.ItemClickListener{
 
     private int docID;
     private ProgressBar orderProgressBar;
     private EditText edCustomer;
     private Document document;
+    RecyclerView orderContents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+
         TextView tvDocNo = (TextView) findViewById(R.id.tvOrderDocNo);
         orderProgressBar = (ProgressBar) findViewById(R.id.orderProgressBar);
         edCustomer = (EditText) findViewById(R.id.edCustomer);
+        orderContents = (RecyclerView) findViewById(R.id.orderContents);
+
 
         Intent intent = getIntent();
         docID = intent.getIntExtra("DOCID",0);
@@ -113,5 +118,10 @@ public class OrderActivity extends AppCompatActivity {
             Toast.makeText(OrderActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
         }
         return result;
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+
     }
 }

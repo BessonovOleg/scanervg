@@ -26,9 +26,9 @@ import java.util.List;
 import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.async.DocumentLoader;
 import ua.com.vg.scanervg.dao.DatabaseManager;
-import ua.com.vg.scanervg.documents.DocContentsRVAdapter;
+import ua.com.vg.scanervg.adapters.DocContentsRVAdapter;
 import ua.com.vg.scanervg.documents.Document;
-import ua.com.vg.scanervg.documents.Entity;
+import ua.com.vg.scanervg.model.Entity;
 import ua.com.vg.scanervg.utils.ScanKind;
 
 public class DocumentActivity extends AppCompatActivity implements DocContentsRVAdapter.ItemClickListener{

@@ -1,6 +1,6 @@
 package ua.com.vg.scanervg.documents;
 
-import ua.com.vg.scanervg.documents.Entity;
+import ua.com.vg.scanervg.model.Entity;
 
 public class RowContent {
     private Entity entity;

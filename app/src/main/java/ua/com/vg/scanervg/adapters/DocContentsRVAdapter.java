@@ -1,4 +1,4 @@
-package ua.com.vg.scanervg.documents;
+package ua.com.vg.scanervg.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ua.com.vg.scanervg.R;
+import ua.com.vg.scanervg.documents.RowContent;
 
 public class DocContentsRVAdapter extends RecyclerView.Adapter<DocContentsRVAdapter.DocContentsViewHolder>{
     private List<RowContent> mRowContentsList;

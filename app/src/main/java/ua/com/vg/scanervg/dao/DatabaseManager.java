@@ -2,12 +2,7 @@ package ua.com.vg.scanervg.dao;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,15 +11,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
-import ua.com.vg.scanervg.documents.Agent;
+import ua.com.vg.scanervg.model.Agent;
 import ua.com.vg.scanervg.documents.DocInfo;
 import ua.com.vg.scanervg.documents.Document;
-import ua.com.vg.scanervg.documents.Entity;
+import ua.com.vg.scanervg.model.Entity;
 import ua.com.vg.scanervg.documents.RowContent;
 import ua.com.vg.scanervg.utils.ScanKind;
 

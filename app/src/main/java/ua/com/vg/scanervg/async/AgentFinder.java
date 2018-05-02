@@ -10,7 +10,7 @@ import java.util.List;
 
 import ua.com.vg.scanervg.activities.MainActivity;
 import ua.com.vg.scanervg.dao.DatabaseManager;
-import ua.com.vg.scanervg.documents.Agent;
+import ua.com.vg.scanervg.model.Agent;
 
 public class AgentFinder extends AsyncTask<String,Void,List<Agent>> {
     String errorMessage = "";
