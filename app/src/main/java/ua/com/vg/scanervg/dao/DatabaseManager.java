@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import ua.com.vg.scanervg.documents.Agent;
 import ua.com.vg.scanervg.documents.DocInfo;
 import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.documents.Entity;
@@ -65,9 +66,9 @@ public class DatabaseManager {
         connection = DriverManager.getConnection(dbUrl, login, password);
     }
 
-    public List<DocInfo> getDocList(){
+    public List<DocInfo> getDocList(int numberDocKind){
         List<DocInfo> result = new ArrayList<>();
-        Statement st = null;
+        PreparedStatement ps = null;
         ResultSet rs = null;
 
         if(connection == null){
@@ -79,24 +80,26 @@ public class DatabaseManager {
         }
 
         try{
-            st = connection.createStatement();
-            rs = st.executeQuery("exec getAndroidDocList");
+            ps = connection.prepareStatement("exec getAndroidDocList ?");
+            ps.setInt(1,numberDocKind);
+            rs = ps.executeQuery();
             if (rs != null) {
                 while (rs.next()) {
                     DocInfo tmpDocInfo = new DocInfo();
                     tmpDocInfo.setDocID(rs.getInt("docId"));
                     tmpDocInfo.setDocName(rs.getString("docName"));
                     tmpDocInfo.setDocNumber(rs.getString("docNo"));
-                    //tmpDocInfo.setDocDate(rs.getDate("docDate"));
+                    tmpDocInfo.setDocMemo(rs.getString("docMemo"));
+                    tmpDocInfo.setDocSum(rs.getDouble("docSum"));
                     result.add(tmpDocInfo);
                 }
             }
         }catch (SQLException ex){
             throw new RuntimeException();
         }finally {
-            if(st!= null){
+            if(ps!= null){
                 try {
-                    st.close();
+                    ps.close();
                 }catch (Exception e){
                     throw new RuntimeException(e);
                 }
@@ -105,16 +108,16 @@ public class DatabaseManager {
         return result;
     }
 
-    public Entity getEntityByCode(String code, ScanKind scanKind){
-        Entity result = new Entity(0,"","");
+    public List<Entity> getEntityByCode(String code, ScanKind scanKind){
+        List<Entity> result = new ArrayList<>();
         Statement st = null;
         ResultSet rs = null;
-        String storedProcedureName = "";
+        int entityKind = 0;
 
         if(scanKind == ScanKind.scanContentEntity){
-            storedProcedureName = "getAndroidContentEntity";
+            entityKind = 1;
         }else if(scanKind == ScanKind.scanMakedEntity){
-            storedProcedureName = "getAndroidMakedEntity";
+            entityKind = 2;
         }
 
         if(connection == null){
@@ -127,12 +130,15 @@ public class DatabaseManager {
 
         try{
             st = connection.createStatement();
-            rs = st.executeQuery("exec " + storedProcedureName + " '" + code + "'");
+            rs = st.executeQuery("exec getAndroidEntityByCode '" + code + "'," + entityKind);
             if (rs != null) {
                 while (rs.next()) {
-                    result.setEntid(rs.getInt("ID"));
-                    result.setEntname(rs.getString("NAME"));
-                    result.setEntCode(rs.getString("CODE"));
+                    Entity entity = new Entity(0,"","");
+                    entity.setEntid(rs.getInt("ID"));
+                    entity.setEntname(rs.getString("NAME"));
+                    entity.setEntCode(rs.getString("CODE"));
+                    entity.setUnit(rs.getString("UNIT"));
+                    result.add(entity);
                 }
             }
         }catch (SQLException ex){
@@ -303,4 +309,123 @@ public class DatabaseManager {
         }
         return result;
     }
+
+    public List<Agent> getWarehouses(){
+        List<Agent> result = new ArrayList<>();
+        Statement st = null;
+        ResultSet rs = null;
+
+        if(connection == null){
+            try {
+                connect();
+            }catch (SQLException|ClassNotFoundException ex){
+                throw new RuntimeException(ex);
+            }
+        }
+
+        try{
+            st = connection.createStatement();
+            rs = st.executeQuery("exec getAndroidWarehouses");
+            if (rs != null) {
+                while (rs.next()) {
+                    Agent warehouse = new Agent();
+                    warehouse.setId(rs.getInt("id"));
+                    warehouse.setName(rs.getString("name"));
+                    result.add(warehouse);
+                }
+            }
+        }catch (SQLException ex){
+            throw new RuntimeException();
+        }finally {
+            if(st!= null){
+                try {
+                    st.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<Agent> findAgentByName(String filter){
+        List<Agent> result = new ArrayList<>();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        if(connection == null){
+            try {
+                connect();
+            }catch (SQLException|ClassNotFoundException ex){
+                throw new RuntimeException(ex);
+            }
+        }
+
+        try{
+            ps = connection.prepareStatement("exec getAndroidAgentByName ?");
+            ps.setString(1,filter);
+            rs = ps.executeQuery();
+
+            if (rs != null) {
+                while (rs.next()) {
+                    Agent agent = new Agent();
+                    agent.setId(rs.getInt("id"));
+                    agent.setName(rs.getString("name"));
+                    result.add(agent);
+                }
+            }
+        }catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }finally {
+            if(ps!= null){
+                try {
+                    ps.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return result;
+    }
+
+    public Agent getAgentById(int id){
+        Agent result = new Agent();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        if(connection == null){
+            try {
+                connect();
+            }catch (SQLException|ClassNotFoundException ex){
+                throw new RuntimeException(ex);
+            }
+        }
+
+        try{
+            ps = connection.prepareStatement("exec getAndroidAgentById ?");
+            ps.setInt(1,id);
+            rs = ps.executeQuery();
+
+            if (rs != null) {
+                while (rs.next()) {
+                    result.setId(rs.getInt("id"));
+                    result.setName(rs.getString("name"));
+                }
+            }
+        }catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }finally {
+            if(ps!= null){
+                try {
+                    ps.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return result;
+    }
+
+
+
 }

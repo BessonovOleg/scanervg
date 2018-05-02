@@ -8,6 +8,10 @@ public class Document {
     private Entity makedEntity;
     private List<RowContent> contentList;
     private String docMemo;
+    private Agent agentFrom;
+    private Agent agentTo;
+    private double docSum;
+    private String docNo;
 
     public List<RowContent> getContentList() {
         return contentList;
@@ -15,6 +19,7 @@ public class Document {
 
     public void setContentList(List<RowContent> contentList) {
         this.contentList = contentList;
+        calcDocSum();
     }
 
     public Document() {
@@ -22,6 +27,17 @@ public class Document {
         docId = 0;
         docMemo = "";
         makedEntity = new Entity(0,"","");
+        docSum = 0;
+        agentFrom = new Agent(0,"");
+        agentTo = new Agent(0,"");
+        docNo = "";
+    }
+
+    private void calcDocSum(){
+        docSum = 0;
+        for(RowContent rc:contentList){
+            docSum += rc.getSum();
+        }
     }
 
     public Entity getMakedEntity() {
@@ -53,6 +69,7 @@ public class Document {
         if(!entExists){
             contentList.add(row);
         }
+        calcDocSum();
     }
 
     public int getDocId() {
@@ -69,5 +86,37 @@ public class Document {
 
     public void setDocMemo(String docMemo) {
         this.docMemo = docMemo;
+    }
+
+    public Agent getAgentFrom() {
+        return agentFrom;
+    }
+
+    public void setAgentFrom(Agent agentFrom) {
+        this.agentFrom = agentFrom;
+    }
+
+    public Agent getAgentTo() {
+        return agentTo;
+    }
+
+    public void setAgentTo(Agent agentTo) {
+        this.agentTo = agentTo;
+    }
+
+    public double getDocSum() {
+        return docSum;
+    }
+
+    public void setDocSum(double docSum) {
+        this.docSum = docSum;
+    }
+
+    public String getDocNo() {
+        return docNo;
+    }
+
+    public void setDocNo(String docNo) {
+        this.docNo = docNo;
     }
 }

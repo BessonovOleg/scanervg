@@ -6,6 +6,28 @@ public class RowContent {
     private Entity entity;
     private double qty;
     private int rowno;
+    private double price;
+    private double sum;
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+        calcRowSum();
+    }
+
+    public double getSum() {
+        return sum;
+    }
+
+    public void setSum(double sum) {
+        this.sum = sum;
+        if(qty != 0 && sum !=0 ){
+            price = sum / qty;
+        }
+    }
 
     public String getEntName(){
         String result = "<не указан>";
@@ -17,11 +39,9 @@ public class RowContent {
 
     public String getEntCode(){
         String result = "<не указан>";
-
         if(entity != null ){
             result = entity.getEntCode();
         }
-
         return result;
     }
 
@@ -34,10 +54,13 @@ public class RowContent {
 
     public RowContent() {
         qty = 0;
+        price = 0;
+        sum = 0;
     }
 
     public void setQty(double qty) {
         this.qty = qty;
+        calcRowSum();
     }
 
     public void setRowno(int rowno) {
@@ -62,6 +85,7 @@ public class RowContent {
 
     public void addQty(double qtyAdd){
         qty += qtyAdd;
+        calcRowSum();
     }
 
     public String getUnitName(){
@@ -71,5 +95,9 @@ public class RowContent {
         {
             return entity.getUnit();
         }
+    }
+
+    private void calcRowSum(){
+        sum = qty * price;
     }
 }

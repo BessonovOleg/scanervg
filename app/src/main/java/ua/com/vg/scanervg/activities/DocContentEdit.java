@@ -29,6 +29,7 @@ public class DocContentEdit extends Activity implements View.OnClickListener{
     TextView tvDocContentEntName;
     TextView tvDocContentQty;
     String strQty;
+    boolean newInputFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class DocContentEdit extends Activity implements View.OnClickListener{
         setContentView(R.layout.activity_doc_content_edit);
         this.setFinishOnTouchOutside(false);
         strQty = "0";
+        newInputFlag = true;
 
         tvDocContentEntName = (TextView) findViewById(R.id.tvDocContentEntName);
         tvDocContentQty = (TextView) findViewById(R.id.tvDocContentQty);
@@ -110,6 +112,12 @@ public class DocContentEdit extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+
+        if(newInputFlag){
+            strQty = "";
+            newInputFlag = false;
+        }
+
         StringBuilder sb = new StringBuilder(strQty);
         switch (v.getId()){
             case R.id.b0:

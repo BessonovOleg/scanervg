@@ -5,17 +5,32 @@ import java.util.Date;
 public class DocInfo {
     private int docID;
     private String docName;
-    private Date   docDate;
     private String docNumber;
+    private String docMemo;
+    private double docSum;
 
-    @Override
-    public String toString() {
-        return "DocInfo{" +
-                "docID=" + docID +
-                ", docName='" + docName + '\'' +
-                ", docDate=" + docDate +
-                ", docNumber='" + docNumber + '\'' +
-                '}';
+    public DocInfo() {
+        docID = 0;
+        docName = "";
+        docNumber = "";
+        docMemo = "";
+        docSum = 0;
+    }
+
+    public double getDocSum() {
+        return docSum;
+    }
+
+    public void setDocSum(double docSum) {
+        this.docSum = docSum;
+    }
+
+    public String getDocMemo() {
+        return docMemo;
+    }
+
+    public void setDocMemo(String docMemo) {
+        this.docMemo = docMemo;
     }
 
     public int getDocID() {
@@ -32,14 +47,6 @@ public class DocInfo {
 
     public void setDocName(String docName) {
         this.docName = docName;
-    }
-
-    public Date getDocDate() {
-        return docDate;
-    }
-
-    public void setDocDate(Date docDate) {
-        this.docDate = docDate;
     }
 
     public String getDocNumber() {

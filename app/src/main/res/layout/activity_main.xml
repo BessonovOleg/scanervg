@@ -39,6 +39,13 @@
         android:textSize="24sp"
         android:textStyle="bold|italic" />
 
+    <Button
+        android:id="@+id/btnSelectDocKind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

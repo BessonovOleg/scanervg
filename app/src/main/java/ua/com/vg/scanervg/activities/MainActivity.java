@@ -1,23 +1,24 @@
 package ua.com.vg.scanervg.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -25,16 +26,18 @@ import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.documents.DocInfo;
 import ua.com.vg.scanervg.documents.DocInfoRVAdapter;
+import ua.com.vg.scanervg.utils.DocumentsKind;
 
 
 public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.ItemClickListener{
-    TextView tv;
     RecyclerView rvDocList;
     DocInfoRVAdapter docInfoRVAdapter;
     ProgressBar progressBar;
     DocListWorker docListWorker;
     ImageButton btnAddDocument;
+    Button btnSelectDocKind;
     private static Context context;
+    DocumentsKind docKind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
         setContentView(R.layout.activity_main);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         rvDocList = (RecyclerView) findViewById(R.id.doclist);
-        tv = (TextView) findViewById(R.id.tv);
         ImageButton btnSetting = (ImageButton) findViewById(R.id.btnSetting);
 
         btnSetting.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +65,49 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
                 startActivityForResult(intent,1);
             }
         });
-        fillListDoc();
+
+        btnSelectDocKind = (Button) findViewById(R.id.btnSelectDocKind);
+        btnSelectDocKind.setText(R.string.btnSelectDocKindDefaultText);
+        btnSelectDocKind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDocKind();
+            }
+        });
+    }
+
+    public void selectDocKind(){
+        Resources resources = getResources();
+        final String[] arrayDocKind = resources.getStringArray(R.array.docKinds);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.btnSelectDocKindDefaultText);
+        builder.setItems(arrayDocKind, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0){
+                    docKind = DocumentsKind.Manufacture;
+                }
+                if (which == 1){
+                    docKind = DocumentsKind.Move;
+                }
+                if (which == 2){
+                    docKind = DocumentsKind.Inventorization;
+                }
+                if (which == 3){
+                    docKind = DocumentsKind.Order;
+                }
+                if (which == 4){
+                    docKind = DocumentsKind.Sale;
+                }
+
+                btnSelectDocKind.setText(arrayDocKind[which]);
+                fillListDoc();
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -71,11 +115,42 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
         fillListDoc();
     }
 
+
     @Override
     public void onItemClick(View view, int position) {
-        Intent intent = new Intent(MainActivity.this,DocumentActivity.class);
+        Intent intent = getIntentByDocType(docKind);
         intent.putExtra("DOCID",docInfoRVAdapter.getItem(position).getDocID());
         startActivityForResult(intent,0);
+    }
+
+    private Intent getIntentByDocType(DocumentsKind documentsKind){
+        Intent result = new Intent(MainActivity.this,DocumentActivity.class);
+        if(documentsKind != null){
+            if(documentsKind == DocumentsKind.Manufacture){
+                result = new Intent(MainActivity.this,DocumentActivity.class);
+            }
+
+            /*
+            if(documentsKind == DocumentsKind.Move){
+                numberDocKind = 2;
+            }
+
+            if(documentsKind == DocumentsKind.Inventorization){
+                numberDocKind = 3;
+            }
+            */
+            if(documentsKind == DocumentsKind.Order){
+                result = new Intent(MainActivity.this,OrderActivity.class);
+            }
+
+            /*
+            if(documentsKind == DocumentsKind.Sale){
+                numberDocKind = 5;
+            }
+            */
+        }
+
+        return result;
     }
 
     private void fillListDoc(){
@@ -92,9 +167,13 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
            return;
         }
 
+        if(docKind == null){
+             return;
+        }
+
         btnAddDocument.setEnabled(true);
 
-        docListWorker = new DocListWorker(this);
+        docListWorker = new DocListWorker(this,docKind);
         if(docListWorker != null){
             docListWorker.execute();
         }
@@ -105,12 +184,35 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
     }
 
     class DocListWorker extends AsyncTask<Void,Void,Void>{
-        List<DocInfo> docInfoList;
-        String errorMsg = "";
-        Context ctx;
+        private List<DocInfo> docInfoList;
+        private String errorMsg = "";
+        private Context ctx;
+        private int numberDocKind = 0;
 
-        public DocListWorker(Context ctx) {
+        public DocListWorker(Context ctx,DocumentsKind documentsKind)
+        {
             this.ctx = ctx;
+            if(documentsKind != null){
+                if(documentsKind == DocumentsKind.Manufacture){
+                    numberDocKind = 1;
+                }
+
+                if(documentsKind == DocumentsKind.Move){
+                    numberDocKind = 2;
+                }
+
+                if(documentsKind == DocumentsKind.Inventorization){
+                    numberDocKind = 3;
+                }
+
+                if(documentsKind == DocumentsKind.Order){
+                    numberDocKind = 4;
+                }
+
+                if(documentsKind == DocumentsKind.Sale){
+                    numberDocKind = 5;
+                }
+            }
         }
 
         @Override
@@ -139,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
         protected Void doInBackground(Void... voids) {
             try {
                 DatabaseManager dbDatabaseManager = new DatabaseManager(getApplicationContext());
-                docInfoList = dbDatabaseManager.getDocList();
+                docInfoList = dbDatabaseManager.getDocList(numberDocKind);
             }catch (Exception e){
                 errorMsg = e.getMessage();
             }

@@ -29,9 +29,10 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.SettingActivity" />
         <activity android:name=".activities.DocumentActivity" />
-        <activity android:name=".activities.DocContentEdit"
-            android:theme="@style/Theme.DialogDocumentContent">
-        </activity>
+        <activity
+            android:name=".activities.DocContentEdit"
+            android:theme="@style/Theme.DialogDocumentContent"></activity>
+        <activity android:name=".activities.OrderActivity"></activity>
     </application>
 
 </manifest>
