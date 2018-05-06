@@ -418,6 +418,45 @@ public class DatabaseManager {
         return result;
     }
 
+    public List<Entity> getAllMakedEntities(){
+        List<Entity> result = new ArrayList<>();
+        Statement st = null;
+        ResultSet rs = null;
 
+        if(connection == null){
+            try {
+                connect();
+            }catch (SQLException|ClassNotFoundException ex){
+                throw new RuntimeException(ex);
+            }
+        }
+
+        try{
+            st = connection.createStatement();
+            rs = st.executeQuery("exec getAndroidMakedEntities");
+            if (rs != null) {
+                while (rs.next()) {
+                    Entity entity = new Entity(0,"","");
+                    entity.setEntid(rs.getInt("ID"));
+                    entity.setEntname(rs.getString("NAME"));
+                    entity.setEntCode(rs.getString("CODE"));
+                    entity.setUnit(rs.getString("UNIT"));
+                    result.add(entity);
+                }
+            }
+        }catch (SQLException ex){
+            throw new RuntimeException();
+        }finally {
+            if(st!= null){
+                try {
+                    st.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return result;
+    }
 
 }

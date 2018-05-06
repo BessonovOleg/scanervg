@@ -25,6 +25,7 @@ import java.util.List;
 
 import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.async.DocumentLoader;
+import ua.com.vg.scanervg.async.EntityLoader;
 import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.adapters.DocContentsRVAdapter;
 import ua.com.vg.scanervg.documents.Document;
@@ -42,7 +43,6 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
     Context ctx;
     Document document;
     private int selectedPosition = -1;
-    DbEntity dbEntity;
     DbSaveDocument dbSaveDocument;
     DocumentLoader documentLoader;
 
@@ -172,11 +172,11 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(result != null){
             if(result.getContents() != null) {
-                dbEntity = new DbEntity(ctx);
+                EntityLoader entityLoader = new EntityLoader(docProgressBar,DocumentActivity.this,scanKind);
                 List<Entity> entities = new ArrayList<>();
                     try{
-                        dbEntity.execute(result.getContents());
-                        entities = dbEntity.get();
+                        entityLoader.execute(result.getContents());
+                        entities = entityLoader.get();
                     }catch (Exception e){
                         Toast.makeText(DocumentActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                     }
@@ -223,42 +223,6 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
         dialog.show();
     }
 
-
-    class DbEntity extends AsyncTask<String,Void,List<Entity>>{
-        Context ctx;
-        ScanKind scKind;
-        String errorMessage = "";
-
-        public DbEntity(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            scKind = scanKind;
-        }
-
-        @Override
-        protected void onPostExecute(List<Entity> entity) {
-            super.onPostExecute(entity);
-            if(errorMessage.length() > 0){
-                Toast.makeText(DocumentActivity.this,errorMessage,Toast.LENGTH_LONG).show();
-            }
-        }
-
-        @Override
-        protected List<Entity> doInBackground(String... strings) {
-            List<Entity> result = new ArrayList<>();
-            try {
-                DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
-                result = dbDatabaseManager.getEntityByCode(strings[0],scKind);
-            }catch (Exception e){
-                errorMessage = e.getMessage();
-            }
-            return result;
-        }
-    }
 
     class DbSaveDocument extends AsyncTask<Document,Void,Void>{
         Context ctx;

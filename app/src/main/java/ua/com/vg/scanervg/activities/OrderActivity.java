@@ -5,13 +5,19 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +26,12 @@ import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.adapters.OrderContentsRVAdapter;
 import ua.com.vg.scanervg.async.AgentFinder;
 import ua.com.vg.scanervg.async.DocumentLoader;
+import ua.com.vg.scanervg.async.EntityLoader;
+import ua.com.vg.scanervg.async.MakedEntityLoader;
 import ua.com.vg.scanervg.model.Agent;
 import ua.com.vg.scanervg.documents.Document;
+import ua.com.vg.scanervg.model.Entity;
+import ua.com.vg.scanervg.utils.ScanKind;
 
 public class OrderActivity extends AppCompatActivity implements OrderContentsRVAdapter.ItemClickListener{
 
@@ -30,6 +40,10 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
     private EditText edCustomer;
     private Document document;
     RecyclerView orderContents;
+    OrderContentsRVAdapter orderContentsRVAdapter;
+    private int selectedPosition = -1;
+    private final int EDIT_CONTENT_CODE = 1234;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +55,13 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         edCustomer = (EditText) findViewById(R.id.edCustomer);
         orderContents = (RecyclerView) findViewById(R.id.orderContents);
 
+        Button btnSelectEntityFromCatalog = (Button) findViewById(R.id.btnSelectEntityFromCatalog);
+        btnSelectEntityFromCatalog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectEntityFromCatalog();
+            }
+        });
 
         Intent intent = getIntent();
         docID = intent.getIntExtra("DOCID",0);
@@ -56,7 +77,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         }
 
         ImageButton btnFindCustomer = (ImageButton) findViewById(R.id.btnFindCustomer);
-        btnFindCustomer.setOnClickListener(new View.OnClickListener() {
+        btnFindCustomer.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 String findName = edCustomer.getText().toString();
@@ -86,6 +107,112 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
                 }
             }
         });
+
+        orderContents.setLayoutManager(new LinearLayoutManager(this));
+        orderContentsRVAdapter = new OrderContentsRVAdapter(this,document.getContentList());
+        orderContentsRVAdapter.setClickListener(this);
+        orderContents.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        orderContents.setAdapter(orderContentsRVAdapter);
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == EDIT_CONTENT_CODE){
+            if(resultCode == RESULT_FIRST_USER){
+                orderContentsRVAdapter.removeItem(selectedPosition);
+                selectedPosition = -1;
+                return;
+            }else if(data != null && selectedPosition > -1){
+                double qty = Double.valueOf(data.getStringExtra("QTY"));
+                orderContentsRVAdapter.getItem(selectedPosition).setQty(qty);
+                orderContentsRVAdapter.notifyDataSetChanged();
+                return;
+            }
+        }
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        if(result != null){
+            if(result.getContents() != null) {
+                EntityLoader entityLoader = new EntityLoader(orderProgressBar,OrderActivity.this,ScanKind.scanMakedEntity);
+                List<Entity> entities = new ArrayList<>();
+                try{
+                    entityLoader.execute(result.getContents());
+                    entities = entityLoader.get();
+                }catch (Exception e){
+                    Toast.makeText(OrderActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+                if(entities.size() > 0 ){
+                    Entity entity = new Entity(0,"","");
+                    if(entities.size() == 1){
+                        entity = entities.get(0);
+                            document.addRow(entity,1);
+                            orderContentsRVAdapter.notifyDataSetChanged();
+                    }else {
+                        selectEntityFromDialog(entities);
+                    }
+                }else {
+                    Toast.makeText(this,R.string.msgEntityNotFound,Toast.LENGTH_SHORT).show();
+                }
+            }
+        }else {
+            super.onActivityResult(requestCode,resultCode,data);
+        }
+    }
+
+    public void selectEntityFromDialog(final List<Entity> entities){
+        List<String> names = new ArrayList<>();
+        for(Entity entity:entities){
+            names.add(entity.getEntname());
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(OrderActivity.this);
+        builder.setTitle(R.string.captionDialogSelectEntity);
+        builder.setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                document.addRow(entities.get(which),1);
+                orderContentsRVAdapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    private void selectEntityFromCatalog(){
+        List<Entity> tmpEntities = null;
+        try {
+            MakedEntityLoader makedEntityLoader = new MakedEntityLoader(orderProgressBar,OrderActivity.this);
+            makedEntityLoader.execute();
+            tmpEntities = makedEntityLoader.get();
+        }catch (Exception e){
+            Toast.makeText(OrderActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+
+        if(tmpEntities != null){
+
+            final List<Entity> entities = tmpEntities;
+            List<String> names = new ArrayList<>();
+            for(Entity entity:entities){
+                names.add(entity.getEntname());
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(OrderActivity.this);
+            builder.setTitle(R.string.captionDialogSelectAgent);
+            builder.setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Entity selectedEntity = entities.get(which);
+                    document.addRow(selectedEntity,1);
+                    orderContentsRVAdapter.notifyDataSetChanged();
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
     private void selectAgentFromDialog(final List<Agent> agents){
@@ -94,7 +221,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
             names.add(agent.getName());
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(OrderActivity.this);
-        builder.setTitle(R.string.captionDialogSelectAgent);
+        builder.setTitle(R.string.captionDialogSelectEntity);
         builder.setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -122,6 +249,12 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
 
     @Override
     public void onItemClick(View view, int position) {
-
+        selectedPosition = position;
+        Intent intent = new Intent(OrderActivity.this,DocContentEdit.class);
+        intent.putExtra("QTY",orderContentsRVAdapter.getItem(position).getQty());
+        intent.putExtra("ENTNAME",orderContentsRVAdapter.getItem(position).getEntName());
+        startActivityForResult(intent,EDIT_CONTENT_CODE);
     }
+
+    //TODO Реализовать метод удаления корреспондента
 }
