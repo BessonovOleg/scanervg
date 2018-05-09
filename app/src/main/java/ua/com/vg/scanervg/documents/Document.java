@@ -75,6 +75,31 @@ public class Document {
         calcDocSum();
     }
 
+    public void addDistinctRow(Entity entity,double qty){
+        if (entity == null){
+            return;
+        }
+        int rowno = contentList.size() + 1;
+        boolean entExists = false;
+
+        RowContent row = new RowContent();
+        row.setRowno(rowno);
+        row.setEntity(entity);
+        row.setQty(qty);
+
+        for(RowContent rc:contentList){
+            if(rc.getEntity().equals(entity)){
+                entExists = true;
+            }
+        }
+        if(!entExists){
+            contentList.add(row);
+        }
+        calcDocSum();
+    }
+
+
+
     public int getDocId() {
         return docId;
     }

@@ -134,11 +134,12 @@ public class MainActivity extends AppCompatActivity implements DocInfoRVAdapter.
             if(documentsKind == DocumentsKind.Move){
                 numberDocKind = 2;
             }
+            */
 
             if(documentsKind == DocumentsKind.Inventorization){
-                numberDocKind = 3;
+                result = new Intent(MainActivity.this,InventarizationActivity.class);
             }
-            */
+
             if(documentsKind == DocumentsKind.Order){
                 result = new Intent(MainActivity.this,OrderActivity.class);
             }

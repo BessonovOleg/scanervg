@@ -31,8 +31,9 @@
         <activity android:name=".activities.DocumentActivity" />
         <activity
             android:name=".activities.DocContentEdit"
-            android:theme="@style/Theme.DialogDocumentContent"></activity>
-        <activity android:name=".activities.OrderActivity"></activity>
+            android:theme="@style/Theme.DialogDocumentContent" />
+        <activity android:name=".activities.OrderActivity" />
+        <activity android:name=".activities.InventarizationActivity"></activity>
     </application>
 
 </manifest>

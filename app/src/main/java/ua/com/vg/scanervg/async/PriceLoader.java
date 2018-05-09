@@ -5,24 +5,18 @@ import android.os.AsyncTask;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ua.com.vg.scanervg.activities.MainActivity;
 import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.model.Entity;
-import ua.com.vg.scanervg.utils.ScanKind;
 
-public class EntityLoader extends AsyncTask<String,Void,List<Entity>> {
+public class PriceLoader extends AsyncTask<Entity,Void,Double> {
     private String errorMessage = "";
     private ProgressBar progressBar;
     private Context contextForMessage;
-    ScanKind scKind;
 
-    public EntityLoader(ProgressBar progressBar, Context contextForMessage,ScanKind scanKind) {
+    public PriceLoader(ProgressBar progressBar, Context contextForMessage) {
         this.progressBar = progressBar;
         this.contextForMessage = contextForMessage;
-        this.scKind = scanKind;
     }
 
     @Override
@@ -32,8 +26,8 @@ public class EntityLoader extends AsyncTask<String,Void,List<Entity>> {
     }
 
     @Override
-    protected void onPostExecute(List<Entity> entities) {
-        super.onPostExecute(entities);
+    protected void onPostExecute(Double v) {
+        super.onPostExecute(v);
         progressBar.setVisibility(ProgressBar.INVISIBLE);
         if(errorMessage.length() > 0){
             Toast.makeText(contextForMessage,errorMessage,Toast.LENGTH_LONG).show();
@@ -41,12 +35,12 @@ public class EntityLoader extends AsyncTask<String,Void,List<Entity>> {
     }
 
     @Override
-    protected List<Entity> doInBackground(String... strings) {
-        List<Entity> result = new ArrayList<>();
+    protected Double doInBackground(Entity... params) {
+        double result = 0.0;
         try {
             Context ctx = MainActivity.getContext();
             DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
-            result = dbDatabaseManager.getEntityByCode(strings[0],scKind);
+            result = dbDatabaseManager.getEntityPrice(params[0]);
         }catch (Exception e){
             errorMessage = e.getMessage();
         }

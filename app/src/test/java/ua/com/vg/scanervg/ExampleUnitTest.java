@@ -7,6 +7,7 @@ import java.util.List;
 import ua.com.vg.scanervg.activities.MainActivity;
 import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.documents.DocInfo;
+import ua.com.vg.scanervg.model.Entity;
 
 import static org.junit.Assert.*;
 
@@ -31,4 +32,17 @@ public class ExampleUnitTest {
      //       System.out.println(d.toString());
       //  }
     }
+/*
+    @Test
+    public void testGetNetPrice(){
+
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        Entity entity = new Entity(75,"Тестовый объект","000");
+        double price = databaseManager.getEntityPrice(entity);
+        double value = 100.0;
+        System.out.println(price);
+        assertEquals(value,price,0.0);
+    }
+*/
 }

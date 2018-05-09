@@ -10,30 +10,29 @@ import java.util.List;
 
 import ua.com.vg.scanervg.activities.MainActivity;
 import ua.com.vg.scanervg.dao.DatabaseManager;
+import ua.com.vg.scanervg.model.Agent;
 import ua.com.vg.scanervg.model.Entity;
-import ua.com.vg.scanervg.utils.ScanKind;
 
-public class EntityLoader extends AsyncTask<String,Void,List<Entity>> {
-    private String errorMessage = "";
+public class WarehouseLoader extends AsyncTask<Void,Void,List<Agent>> {
+    String errorMessage = "";
     private ProgressBar progressBar;
     private Context contextForMessage;
-    ScanKind scKind;
 
-    public EntityLoader(ProgressBar progressBar, Context contextForMessage,ScanKind scanKind) {
+    public WarehouseLoader(ProgressBar progressBar, Context contextForMessage) {
         this.progressBar = progressBar;
         this.contextForMessage = contextForMessage;
-        this.scKind = scanKind;
     }
 
     @Override
+
     protected void onPreExecute() {
         super.onPreExecute();
         progressBar.setVisibility(ProgressBar.VISIBLE);
     }
 
     @Override
-    protected void onPostExecute(List<Entity> entities) {
-        super.onPostExecute(entities);
+    protected void onPostExecute(List<Agent> agents) {
+        super.onPostExecute(agents);
         progressBar.setVisibility(ProgressBar.INVISIBLE);
         if(errorMessage.length() > 0){
             Toast.makeText(contextForMessage,errorMessage,Toast.LENGTH_LONG).show();
@@ -41,14 +40,14 @@ public class EntityLoader extends AsyncTask<String,Void,List<Entity>> {
     }
 
     @Override
-    protected List<Entity> doInBackground(String... strings) {
-        List<Entity> result = new ArrayList<>();
+    protected List<Agent> doInBackground(Void... voids) {
+        List<Agent> result = new ArrayList<>();
         try {
             Context ctx = MainActivity.getContext();
             DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
-            result = dbDatabaseManager.getEntityByCode(strings[0],scKind);
+            result = dbDatabaseManager.getWarehouses();
         }catch (Exception e){
-            errorMessage = e.getMessage();
+            errorMessage = e.getMessage().toString();
         }
         return result;
     }

@@ -85,7 +85,7 @@
             android:text="@string/btnSelectEntityFromCatalog" />
 
         <Button
-            android:id="@+id/btnScanEntity"
+            android:id="@+id/btnScanEntityInOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

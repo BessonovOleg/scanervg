@@ -18,6 +18,7 @@ import ua.com.vg.scanervg.documents.DocInfo;
 import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.model.Entity;
 import ua.com.vg.scanervg.documents.RowContent;
+import ua.com.vg.scanervg.utils.DocumentsKind;
 import ua.com.vg.scanervg.utils.ScanKind;
 
 public class DatabaseManager {
@@ -32,6 +33,22 @@ public class DatabaseManager {
             throw new RuntimeException(ex);
         }
     }
+
+/*
+    public DatabaseManager(){
+
+         String dbUrl = "jdbc:jtds:sqlserver://192.168.99.103:1433/AccenVg";
+         String login = "admin";
+         String password = "123";
+         try {
+             Class.forName("net.sourceforge.jtds.jdbc.Driver");
+             connection = DriverManager.getConnection(dbUrl, login, password);
+         }catch (Exception e){
+             e.printStackTrace();
+         }
+
+    }
+*/
 
     public void connect() throws SQLException,ClassNotFoundException{
 
@@ -459,4 +476,49 @@ public class DatabaseManager {
         return result;
     }
 
+    public double getEntityPrice(Entity entity){
+        double result = 0.0;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        if(entity == null){
+            return result;
+        }
+
+        if(connection == null){
+            try {
+                connect();
+            }catch (SQLException|ClassNotFoundException ex){
+                throw new RuntimeException(ex);
+            }
+        }
+
+        try{
+            ps = connection.prepareStatement("exec getAndroidPriceEntity ?");
+            ps.setInt(1,entity.getEntid());
+            rs = ps.executeQuery();
+
+            if (rs != null) {
+                while (rs.next()) {
+                    result = rs.getDouble("price");
+                }
+            }
+        }catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }finally {
+            if(ps!= null){
+                try {
+                    ps.close();
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public void saveDocument(DocumentsKind documentsKind,Document document){
+
+    }
 }
