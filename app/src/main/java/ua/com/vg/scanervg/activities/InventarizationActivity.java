@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import ua.com.vg.scanervg.async.WarehouseLoader;
 import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.model.Agent;
 import ua.com.vg.scanervg.model.Entity;
+import ua.com.vg.scanervg.utils.DocumentsKind;
 import ua.com.vg.scanervg.utils.ScanKind;
 
 public class InventarizationActivity extends AppCompatActivity implements InventContentRVAdapter.ItemClickListener{
@@ -47,7 +49,7 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
         Intent intent = getIntent();
         docID = intent.getIntExtra("DOCID",0);
         if(docID == 0){
-            document = new Document();
+            document = new Document(DocumentsKind.Inventorization);
         }else {
             document = getDocumentByID(docID);
             Agent agentTo = document.getAgentTo();
@@ -63,6 +65,15 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
                 selectSubdiv();
             }
         });
+
+        ImageButton btnSaveInventarization = (ImageButton) findViewById(R.id.btnSaveInventarization);
+        btnSaveInventarization.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                document.save();
+            }
+        });
+
     }
 
 
@@ -126,7 +137,7 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
             names.add(entity.getEntname());
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(InventarizationActivity.this);
-        builder.setTitle(R.string.captionDialogSelectSubDiv);
+        builder.setTitle(R.string.captionDialogSelectEntity);
         builder.setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -156,7 +167,7 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
                 names.add(agent.getName());
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(InventarizationActivity.this);
-            builder.setTitle(R.string.captionDialogSelectAgent);
+            builder.setTitle(R.string.captionDialogSelectSubDiv);
             builder.setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

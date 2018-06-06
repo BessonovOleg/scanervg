@@ -1,10 +1,16 @@
 package ua.com.vg.scanervg.documents;
 
+import android.app.Application;
+import android.util.Log;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.com.vg.scanervg.async.DocumentSaver;
 import ua.com.vg.scanervg.model.Agent;
 import ua.com.vg.scanervg.model.Entity;
+import ua.com.vg.scanervg.utils.DocumentsKind;
 
 public class Document {
     private int docId;
@@ -15,6 +21,15 @@ public class Document {
     private Agent agentTo;
     private double docSum;
     private String docNo;
+    private DocumentsKind documentsKind;
+    
+    public DocumentsKind getDocumentsKind() {
+        return documentsKind;
+    }
+
+    public void setDocumentsKind(DocumentsKind documentsKind) {
+        this.documentsKind = documentsKind;
+    }
 
     public List<RowContent> getContentList() {
         return contentList;
@@ -23,6 +38,11 @@ public class Document {
     public void setContentList(List<RowContent> contentList) {
         this.contentList = contentList;
         calcDocSum();
+    }
+
+    public Document(DocumentsKind docKind){
+        this();
+        setDocumentsKind(docKind);
     }
 
     public Document() {
@@ -98,8 +118,6 @@ public class Document {
         calcDocSum();
     }
 
-
-
     public int getDocId() {
         return docId;
     }
@@ -146,5 +164,30 @@ public class Document {
 
     public void setDocNo(String docNo) {
         this.docNo = docNo;
+    }
+
+    public void save() throws IllegalStateException{
+
+        DocumentSaver documentSaver = new DocumentSaver(documentsKind);
+        try {
+            documentSaver.execute(this);
+        }catch (Exception e){
+            new IllegalStateException(e.getMessage());
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Document{" +
+                "docId=" + docId +
+                ", makedEntity=" + makedEntity +
+                ", contentList=" + contentList +
+                ", docMemo='" + docMemo + '\'' +
+                ", agentFrom=" + agentFrom +
+                ", agentTo=" + agentTo +
+                ", docSum=" + docSum +
+                ", docNo='" + docNo + '\'' +
+                ", documentsKind=" + documentsKind +
+                '}';
     }
 }

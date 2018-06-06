@@ -5,12 +5,14 @@ public class Entity {
     private String entname;
     private String entCode;
     private String unit;
+    private int seriesId;
 
     public Entity() {
         entid = 0;
         entname = "";
         entCode = "";
         unit = "";
+        seriesId = 0;
     }
 
     public Entity(int entid, String entname, String entCode) {
@@ -57,5 +59,13 @@ public class Entity {
 
     public void setEntCode(String entCode) {
         this.entCode = entCode;
+    }
+
+    public int getSeriesId() {
+        return seriesId;
+    }
+
+    public void setSeriesId(int seriesId) {
+        this.seriesId = seriesId;
     }
 }

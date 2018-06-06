@@ -12,29 +12,20 @@ import ua.com.vg.scanervg.utils.DocumentsKind;
 
 public class DocumentSaver extends AsyncTask<Document,Void,Void>{
     private String errorMessage = "";
-    private ProgressBar progressBar;
-    private Context contextForMessage;
     private DocumentsKind documentsKind;
 
-    public DocumentSaver(ProgressBar progressBar, Context contextForMessage, DocumentsKind documentsKind) {
-        this.progressBar = progressBar;
-        this.contextForMessage = contextForMessage;
+    public DocumentSaver(DocumentsKind documentsKind) {
         this.documentsKind = documentsKind;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressBar.setVisibility(ProgressBar.VISIBLE);
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        progressBar.setVisibility(ProgressBar.INVISIBLE);
-        if(errorMessage.length() > 0){
-            Toast.makeText(contextForMessage,errorMessage,Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -42,9 +33,9 @@ public class DocumentSaver extends AsyncTask<Document,Void,Void>{
         try {
             Context ctx = MainActivity.getContext();
             DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
-            dbDatabaseManager.saveDocument(documentsKind,documents[0]);
+            dbDatabaseManager.saveDocument(documents[0]);
         }catch (Exception e){
-            errorMessage = e.getMessage();
+            new IllegalStateException(e.getMessage());
         }
         return null;
     }

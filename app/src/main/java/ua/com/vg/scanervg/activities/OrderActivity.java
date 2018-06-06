@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +36,7 @@ import ua.com.vg.scanervg.async.PriceLoader;
 import ua.com.vg.scanervg.model.Agent;
 import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.model.Entity;
+import ua.com.vg.scanervg.utils.DocumentsKind;
 import ua.com.vg.scanervg.utils.ScanKind;
 
 public class OrderActivity extends AppCompatActivity implements OrderContentsRVAdapter.ItemClickListener{
@@ -42,6 +45,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
     private ProgressBar orderProgressBar;
     private EditText edCustomer;
     private Document document;
+    private EditText editTextOrderMemo;
     RecyclerView orderContents;
     OrderContentsRVAdapter orderContentsRVAdapter;
     private int selectedPosition = -1;
@@ -53,11 +57,12 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
 
-        TextView tvDocNo = (TextView) findViewById(R.id.tvOrderDocNo);
-        orderProgressBar = (ProgressBar) findViewById(R.id.orderProgressBar);
-        edCustomer = (EditText) findViewById(R.id.edCustomer);
-        orderContents = (RecyclerView) findViewById(R.id.orderContents);
-        orderDocSum = (TextView) findViewById(R.id.orderDocSum);
+        TextView tvDocNo  = (TextView)     findViewById(R.id.tvOrderDocNo);
+        orderProgressBar  = (ProgressBar)  findViewById(R.id.orderProgressBar);
+        edCustomer        = (EditText)     findViewById(R.id.edCustomer);
+        orderContents     = (RecyclerView) findViewById(R.id.orderContents);
+        orderDocSum       = (TextView)     findViewById(R.id.orderDocSum);
+        editTextOrderMemo = (EditText)     findViewById(R.id.editTextOrderMemo);
 
         Button btnSelectEntityFromCatalog = (Button) findViewById(R.id.btnSelectEntityFromCatalog);
         btnSelectEntityFromCatalog.setOnClickListener(new View.OnClickListener() {
@@ -70,11 +75,12 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         Intent intent = getIntent();
         docID = intent.getIntExtra("DOCID",0);
         if(docID == 0){
-            document = new Document();
+            document = new Document(DocumentsKind.Order);
         }else {
             document = getDocumentByID(docID);
             tvDocNo.setText(document.getDocNo());
             Agent agentTo = document.getAgentTo();
+            editTextOrderMemo.setText(document.getDocMemo());
             if(agentTo != null){
                 edCustomer.setText(agentTo.getName(),TextView.BufferType.EDITABLE);
             }
@@ -120,6 +126,35 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
             }
         });
 
+        ImageButton btnSaveOrder = (ImageButton) findViewById(R.id.btnSaveOrder);
+        btnSaveOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    document.save();
+                }catch (Exception e){
+                    Toast.makeText(OrderActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        editTextOrderMemo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                document.setDocMemo(editTextOrderMemo.getText().toString());
+            }
+        });
+
         orderContents.setLayoutManager(new LinearLayoutManager(this));
         orderContentsRVAdapter = new OrderContentsRVAdapter(this,document.getContentList());
         orderContentsRVAdapter.setClickListener(this);
@@ -136,6 +171,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
             docSum += orderContentsRVAdapter.getItem(i).getSum();
         }
         orderDocSum.setText(NumberFormat.getCurrencyInstance().format(docSum));
+        document.setDocSum(docSum);
     }
 
     private void scan(){

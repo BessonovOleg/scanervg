@@ -3,6 +3,7 @@ package ua.com.vg.scanervg.dao;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -147,6 +148,7 @@ public class DatabaseManager {
                     entity.setEntname(rs.getString("NAME"));
                     entity.setEntCode(rs.getString("CODE"));
                     entity.setUnit(rs.getString("UNIT"));
+                    entity.setSeriesId(rs.getInt("SERID"));
                     result.add(entity);
                 }
             }
@@ -195,6 +197,7 @@ public class DatabaseManager {
 
                     result.setDocId(rs.getInt("DOCID"));
                     result.setDocMemo(rs.getString("DOCMEMO"));
+                    result.setDocSum(rs.getDouble("DOCSUM"));
                 }
             }
         }catch (SQLException ex){
@@ -230,6 +233,8 @@ public class DatabaseManager {
                     rowContent.setEntity(entity);
                     rowContent.setRowno(rs.getInt("ROWNO"));
                     rowContent.setQty(rs.getDouble("QTY"));
+                    rowContent.setPrice(rs.getDouble("PRICE"));
+                    rowContent.setSum(rs.getDouble("SUMM"));
 
                     rowContents.add(rowContent);
                 }
@@ -249,15 +254,18 @@ public class DatabaseManager {
         return result;
     }
 
-    public int saveDocument(Document document){
+    public void saveDocument(Document document){
+
         PreparedStatement ps = null;
         ResultSet rs = null;
-        int result = -1;
         List<RowContent> rowContents = new ArrayList<>();
+        int documentKindNumber = 0;
 
         if(document == null){
-            return result;
+            throw new IllegalStateException("documents is null");
         }
+
+        documentKindNumber = getDocumentKindNumber(document.getDocumentsKind());
         rowContents = document.getContentList();
 
         if(connection == null){
@@ -270,15 +278,17 @@ public class DatabaseManager {
 
         //Save caption
         try{
-            ps = connection.prepareStatement("exec AndroidUpdateDocuments ?,?,?");
+            ps = connection.prepareStatement("exec AndroidUpdateDocuments ?,?,?,?");
             ps.setInt(1,document.getDocId());
-            ps.setInt(2,document.getMakedEntity().getEntid());
-            ps.setString(3,document.getDocMemo());
+            ps.setString(2,document.getDocMemo());
+            ps.setInt(3,documentKindNumber);
+            ps.setDouble(4,document.getDocSum());
+
+
             rs = ps.executeQuery();
             if (rs != null) {
                 while (rs.next()) {
                     document.setDocId(rs.getInt("DOCID"));
-                    result = rs.getInt("DOCID");
                 }
             }
         }catch (SQLException ex){
@@ -293,16 +303,24 @@ public class DatabaseManager {
             }
         }
 
+
         //Save contents
         if(rowContents.size() > 0){
+
             for(RowContent rc:rowContents){
                 try{
-                    ps = connection.prepareStatement("exec AndroidUpdateJournal ?,?,?,?");
-                    ps.setInt(1,document.getDocId());
-                    ps.setInt(2,rc.getRowno());
-                    ps.setInt(3,rc.getEntityID());
-                    ps.setDouble(4,rc.getQty());
-                    ps.executeQuery();
+                    ps = connection.prepareStatement("exec AndroidUpdateJournal ?,?,?,?,?,?,?,?,?,?");
+                    ps.setInt(1,documentKindNumber);
+                    ps.setInt(2,document.getDocId());
+                    ps.setInt(3,rc.getRowno());
+                    ps.setInt(4,rc.getEntityID());
+                    ps.setDouble(5,rc.getQty());
+                    ps.setDouble(6,rc.getPrice());
+                    ps.setDouble(7,rc.getSum());
+                    ps.setInt(8,document.getMakedEntity().getEntid());
+                    ps.setInt(9,rc.getEntity().getSeriesId());
+                    ps.setInt(10,document.getAgentTo().getId());
+                    ps.executeUpdate();
                 }catch (SQLException ex){
                     throw new RuntimeException(ex);
                 }finally {
@@ -316,7 +334,6 @@ public class DatabaseManager {
                 }
             }
         }
-        return result;
     }
 
     public List<Agent> getWarehouses(){
@@ -518,7 +535,24 @@ public class DatabaseManager {
         return result;
     }
 
-    public void saveDocument(DocumentsKind documentsKind,Document document){
-
+    private int getDocumentKindNumber(DocumentsKind documentsKind){
+        int result = 0;
+        if(documentsKind == DocumentsKind.Manufacture){
+            result = 1;
+        }
+        if(documentsKind == DocumentsKind.Order){
+            result = 2;
+        }
+        if(documentsKind == DocumentsKind.Move){
+            result = 3;
+        }
+        if(documentsKind == DocumentsKind.Inventorization){
+            result = 4;
+        }
+        if(documentsKind == DocumentsKind.Sale){
+            result = 5;
+        }
+        return result;
     }
+
 }
