@@ -1,70 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.MainActivity">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
-
-        <ImageButton
-            android:id="@+id/btnSetting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:contentDescription="@string/descr_overflow_button"
-            android:src="@android:drawable/ic_menu_manage"
-            android:layout_alignParentEnd="true" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/docTitle"
-        android:textColor="@android:color/background_dark"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
-
-    <Button
-        android:id="@+id/btnSelectDocKind"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold|italic"/>
+    android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:orientation="horizontal">
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
 
-        <ImageButton
-            android:id="@+id/addDocument"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:contentDescription="@string/descr_overflow_add_document"
-            android:src="@android:drawable/ic_input_add" />
+        <Button
+            android:id="@+id/buttonDocOrder"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableTop="@drawable/img_order"
+            android:scaleType="fitXY"
+            android:text="@string/docNameOrder" />
 
+        <Button
+            android:id="@+id/buttonDocSale"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableTop="@drawable/img_sale"
+            android:scaleType="fitXY"
+            android:text="@string/docNameSale" />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/doclist"/>
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
 
+        <Button
+            android:id="@+id/buttonDocManuf"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableTop="@drawable/img_manuf"
+            android:scaleType="fitXY"
+            android:text="@string/docNameManufacture" />
+
+        <Button
+            android:id="@+id/buttonDocMove"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableTop="@drawable/img_move"
+            android:scaleType="fitXY"
+            android:text="@string/docNameMove" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
+
+        <Button
+            android:id="@+id/buttonDocInvent"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableTop="@drawable/img_inventar"
+            android:scaleType="fitXY"
+            android:text="@string/docNameInvent" />
+
+        <Button
+            android:id="@+id/buttonSetting"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableTop="@drawable/img_setting"
+            android:scaleType="fitXY"
+            android:text="@string/btnSettingCaption" />
+    </LinearLayout>
 </LinearLayout>

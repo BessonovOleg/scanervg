@@ -33,7 +33,8 @@
             android:name=".activities.DocContentEdit"
             android:theme="@style/Theme.DialogDocumentContent" />
         <activity android:name=".activities.OrderActivity" />
-        <activity android:name=".activities.InventarizationActivity"></activity>
+        <activity android:name=".activities.InventarizationActivity" />
+        <activity android:name=".activities.ListDocsActivity"></activity>
     </application>
 
 </manifest>

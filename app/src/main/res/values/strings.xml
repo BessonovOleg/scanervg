@@ -41,4 +41,12 @@
         <item>Заявка</item>
         <item>Реализация</item>
     </string-array>
+    <string name="docNameManufacture">Производство</string>
+    <string name="docNameMove">Внутреннее перемещение</string>
+    <string name="docNameInvent">Инвентаризация</string>
+    <string name="docNameOrder">Заявки</string>
+    <string name="docNameSale">Реализация</string>
+    <string name="btnSettingCaption">Настройки</string>
+
+
 </resources>
