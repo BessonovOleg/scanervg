@@ -47,12 +47,18 @@ public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocI
         TextView docName;
         TextView docDate;
         TextView docNumber;
+        TextView docAgent;
+        TextView docMemo;
+        TextView docSum;
 
         public DocInvoViewHolder(View itemView){
             super(itemView);
-            docName = itemView.findViewById(R.id.docName);
-            docDate = itemView.findViewById(R.id.docDate);
-            docNumber = itemView.findViewById(R.id.docNumber);
+            docName = itemView.findViewById(R.id.di_docName);
+            docDate = itemView.findViewById(R.id.di_docDate);
+            docNumber = itemView.findViewById(R.id.di_docNumber);
+            docAgent = itemView.findViewById(R.id.di_docAgentName);
+            docMemo  = itemView.findViewById(R.id.di_docMemo);
+            docSum   = itemView.findViewById(R.id.di_docSum);
             itemView.setOnClickListener(this);
         }
 

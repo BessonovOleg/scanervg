@@ -4,10 +4,28 @@ import java.util.Date;
 
 public class DocInfo {
     private int docID;
+    private String strDocDate;
     private String docName;
     private String docNumber;
     private String docMemo;
+    private String docAgentName;
     private double docSum;
+
+    public String getStrDocDate() {
+        return strDocDate;
+    }
+
+    public void setStrDocDate(String strDocDate) {
+        this.strDocDate = strDocDate;
+    }
+
+    public String getDocAgentName() {
+        return docAgentName;
+    }
+
+    public void setDocAgentName(String docAgentName) {
+        this.docAgentName = docAgentName;
+    }
 
     public DocInfo() {
         docID = 0;
@@ -15,6 +33,8 @@ public class DocInfo {
         docNumber = "";
         docMemo = "";
         docSum = 0;
+        docAgentName = "";
+        strDocDate = "";
     }
 
     public double getDocSum() {

@@ -1,49 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="6dip" >
+
+    <ImageView
+        android:id="@+id/di_docicon"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:contentDescription="@string/docTitle"
+        android:scaleType="fitStart"
+        android:src="@drawable/img_document" />
 
     <TextView
-        android:id="@+id/docName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:lines="2"
-        android:textColor="@android:color/black"
-        android:textSize="18sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:id="@+id/di_docName"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_height="26dip"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/di_docicon"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/docDate"
+        android:id="@+id/di_symbolNo"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_height="26dip"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/di_docName"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="@string/symbolNumber"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/di_docNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentTop="true"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:height="26dip"
+        android:layout_toRightOf="@+id/di_symbolNo"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/di_docDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentTop="true"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:layout_toRightOf="@+id/di_docNumber"
+        android:height="26dip"
         android:textColor="@android:color/black"
         android:layout_weight="2"
         android:textSize="16sp"/>
 
-     <TextView
-        android:text="@string/symbolNumber"
+    <TextView
+        android:id="@+id/di_docAgentName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:layout_marginLeft="5dp"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:layout_toRightOf="@+id/di_docicon"
+        android:layout_below="@+id/di_docName"
+        android:height="26dip"
         android:textColor="@android:color/black"
-        android:textSize="16sp"/>
+        android:layout_weight="2"
+        android:textSize="14sp"/>
 
-     <TextView
-        android:id="@+id/docNumber"
+    <TextView
+        android:id="@+id/di_docMemo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_weight="1"
+        android:layout_marginLeft="5dp"
+        android:ellipsize="marquee"
+        android:layout_toRightOf="@+id/di_docicon"
+        android:layout_below="@+id/di_docAgentName"
+        android:height="26dip"
         android:textColor="@android:color/black"
-        android:textSize="16sp"/>
+        android:textSize="10sp"/>
 
-    </LinearLayout>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/di_docSum"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:ellipsize="marquee"
+        android:height="26dip"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:textStyle="bold"/>
+
+
+</RelativeLayout>

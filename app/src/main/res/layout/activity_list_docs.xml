@@ -31,10 +31,12 @@
             android:id="@+id/addDocument"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_gravity="end"
+            android:layout_margin="5dp"
+            android:background="@drawable/oval_background"
             android:contentDescription="@string/descr_overflow_add_document"
-            android:src="@android:drawable/ic_input_add"
-            android:layout_alignParentEnd="true"/>
+            android:src="@android:drawable/ic_input_add" />
 
     </RelativeLayout>
 

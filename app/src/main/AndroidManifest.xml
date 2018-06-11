@@ -34,7 +34,9 @@
             android:theme="@style/Theme.DialogDocumentContent" />
         <activity android:name=".activities.OrderActivity" />
         <activity android:name=".activities.InventarizationActivity" />
-        <activity android:name=".activities.ListDocsActivity"></activity>
+        <activity android:name=".activities.ListDocsActivity" />
+        <activity android:name=".activities.MoveActivity" />
+        <activity android:name=".activities.SaleActivity"></activity>
     </application>
 
 </manifest>

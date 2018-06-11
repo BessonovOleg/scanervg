@@ -29,14 +29,16 @@ import ua.com.vg.scanervg.adapters.DocInfoRVAdapter;
 import ua.com.vg.scanervg.utils.DocumentsKind;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private static Context context;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MainActivity.context = getApplicationContext();
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
         Button btnSetting = (Button) findViewById(R.id.buttonSetting);
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,40 +54,11 @@ public class MainActivity extends AppCompatActivity{
         Button buttonDocMove  = (Button) findViewById(R.id.buttonDocMove);
         Button buttonDocInvent = (Button) findViewById(R.id.buttonDocInvent);
 
-        buttonDocOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDocListActivity(DocumentsKind.Order);
-            }
-        });
-
-        buttonDocSale.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDocListActivity(DocumentsKind.Sale);
-            }
-        });
-
-        buttonDocManuf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDocListActivity(DocumentsKind.Manufacture);
-            }
-        });
-
-        buttonDocMove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDocListActivity(DocumentsKind.Move);
-            }
-        });
-
-        buttonDocInvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDocListActivity(DocumentsKind.Inventorization);
-            }
-        });
+        buttonDocOrder.setOnClickListener(this);
+        buttonDocSale.setOnClickListener(this);
+        buttonDocManuf.setOnClickListener(this);
+        buttonDocMove.setOnClickListener(this);
+        buttonDocInvent.setOnClickListener(this);
     }
 
     public static Context getContext(){
@@ -97,4 +70,41 @@ public class MainActivity extends AppCompatActivity{
         intent.putExtra("docKind",documentsKind);
         startActivity(intent);
     }
+
+    private boolean isSettingCorrect() {
+        boolean result = true;
+        if(sp == null) return false;
+
+        if (sp.getString("ipAddress", "").equals("")  ||
+                sp.getString("port", "").equals("")   ||
+                sp.getString("port", "").equals("")   ||
+                sp.getString("dbName", "").equals("") ||
+                sp.getString("login", "").equals("")) {
+            Toast.makeText(this, R.string.msgNotSetConfig, Toast.LENGTH_SHORT).show();
+            result = false;
+        }
+        return result;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(isSettingCorrect()) {
+            if(v.getId() == R.id.buttonDocOrder){
+                startDocListActivity(DocumentsKind.Order);
+            }
+            if(v.getId() == R.id.buttonDocSale){
+                startDocListActivity(DocumentsKind.Sale);
+            }
+            if(v.getId() == R.id.buttonDocManuf){
+                startDocListActivity(DocumentsKind.Manufacture);
+            }
+            if(v.getId() == R.id.buttonDocMove){
+                startDocListActivity(DocumentsKind.Move);
+            }
+            if(v.getId() == R.id.buttonDocInvent){
+                startDocListActivity(DocumentsKind.Inventorization);
+            }
+        }
+    }
+
 }
