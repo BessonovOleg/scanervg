@@ -64,7 +64,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         orderDocSum       = (TextView)     findViewById(R.id.orderDocSum);
         editTextOrderMemo = (EditText)     findViewById(R.id.editTextOrderMemo);
 
-        Button btnSelectEntityFromCatalog = (Button) findViewById(R.id.btnSelectEntityFromCatalog);
+        ImageButton btnSelectEntityFromCatalog = (ImageButton) findViewById(R.id.btnSelectEntityFromCatalog);
         btnSelectEntityFromCatalog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +118,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
             }
         });
 
-        Button btnScanEntity = (Button) findViewById(R.id.btnScanEntityInOrder);
+        ImageButton btnScanEntity = (ImageButton) findViewById(R.id.btnScanEntityInOrder);
         btnScanEntity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -281,14 +281,13 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         }
 
         if(tmpEntities != null){
-
             final List<Entity> entities = tmpEntities;
             List<String> names = new ArrayList<>();
             for(Entity entity:entities){
                 names.add(entity.getEntname());
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(OrderActivity.this);
-            builder.setTitle(R.string.captionDialogSelectAgent);
+            builder.setTitle(R.string.captionDialogSelectEntity);
             builder.setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

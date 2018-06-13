@@ -101,6 +101,8 @@ public class DatabaseManager {
                     tmpDocInfo.setDocNumber(rs.getString("docNo"));
                     tmpDocInfo.setDocMemo(rs.getString("docMemo"));
                     tmpDocInfo.setDocSum(rs.getDouble("docSum"));
+                    tmpDocInfo.setDocAgentName(rs.getString("docAgent"));
+                    tmpDocInfo.setStrDocDate(rs.getString("docDate"));
                     result.add(tmpDocInfo);
                 }
             }

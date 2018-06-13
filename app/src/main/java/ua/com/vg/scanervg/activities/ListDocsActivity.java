@@ -65,6 +65,12 @@ public class ListDocsActivity extends AppCompatActivity implements DocInfoRVAdap
         fillDocList();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        fillDocList();
+    }
+
     public void fillDocList(){
         docListWorker = new DocListWorker(this,documentsKind);
                 if(docListWorker != null){
@@ -97,8 +103,34 @@ public class ListDocsActivity extends AppCompatActivity implements DocInfoRVAdap
 
     @Override
     public void onItemClick(View view, int position) {
-
+        Intent intent = getIntentByDocType();
+                intent.putExtra("DOCID",docInfoRVAdapter.getItem(position).getDocID());
+                startActivityForResult(intent,0);
     }
+
+    private Intent getIntentByDocType() {
+        Intent result = new Intent(ListDocsActivity.this, ListDocsActivity.class);
+        if (documentsKind == null){
+            return result;
+        }
+        if (documentsKind == DocumentsKind.Manufacture) {
+            result = new Intent(ListDocsActivity.this, DocumentActivity.class);
+        }
+        if (documentsKind == DocumentsKind.Sale){
+            result = new Intent(ListDocsActivity.this, SaleActivity.class);
+        }
+        if (documentsKind == DocumentsKind.Inventorization){
+            result = new Intent(ListDocsActivity.this, InventarizationActivity.class);
+        }
+        if (documentsKind == DocumentsKind.Order){
+            result = new Intent(ListDocsActivity.this, OrderActivity.class);
+        }
+        if (documentsKind == DocumentsKind.Move){
+            result = new Intent(ListDocsActivity.this, MoveActivity.class);
+        }
+        return result;
+    }
+
 
     class DocListWorker extends AsyncTask<Void,Void,Void> {
         private List<DocInfo> docInfoList;

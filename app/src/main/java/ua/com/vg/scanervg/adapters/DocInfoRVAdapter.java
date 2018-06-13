@@ -8,29 +8,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.documents.DocInfo;
 
 
-public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocInvoViewHolder> {
+public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocInfoViewHolder> {
     private List<DocInfo> mdocInfoList;
     private LayoutInflater mLayoutInflater;
     private ItemClickListener mClickListener;
 
     @NonNull
     @Override
-    public DocInvoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DocInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.docinfo_layout,parent,false);
-        return new DocInvoViewHolder(view);
+        return new DocInfoViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DocInvoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DocInfoViewHolder holder, int position) {
         DocInfo docInfo = mdocInfoList.get(position);
         holder.docName.setText(docInfo.getDocName());
         holder.docNumber.setText(docInfo.getDocNumber());
+        holder.docMemo.setText(docInfo.getDocMemo());
+        holder.docAgent.setText(docInfo.getDocAgentName());
+        holder.docDate.setText(docInfo.getStrDocDate());
+        if(docInfo.getDocSum() != 0){
+            String sum =  new DecimalFormat("#0.00").format(docInfo.getDocSum());
+            sum.replace(",",".");
+            holder.docSum.setText(sum);
+        }
     }
 
     @Override
@@ -43,7 +52,7 @@ public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocI
         this.mdocInfoList = data;
     }
 
-    public class DocInvoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class DocInfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView docName;
         TextView docDate;
         TextView docNumber;
@@ -51,7 +60,7 @@ public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocI
         TextView docMemo;
         TextView docSum;
 
-        public DocInvoViewHolder(View itemView){
+        public DocInfoViewHolder(View itemView){
             super(itemView);
             docName = itemView.findViewById(R.id.di_docName);
             docDate = itemView.findViewById(R.id.di_docDate);

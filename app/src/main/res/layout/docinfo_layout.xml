@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:padding="6dip" >
 
     <ImageView
         android:id="@+id/di_docicon"
         android:layout_width="52dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginStart="5dp"
         android:contentDescription="@string/docTitle"
@@ -24,7 +24,6 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/di_docicon"
         android:ellipsize="marquee"
-        android:singleLine="true"
         android:textSize="14sp" />
 
     <TextView
@@ -47,8 +46,8 @@
         android:layout_marginLeft="5dp"
         android:layout_alignParentTop="true"
         android:ellipsize="marquee"
-        android:singleLine="true"
         android:height="26dip"
+        android:layout_toLeftOf="@+id/di_docSum"
         android:layout_toRightOf="@+id/di_symbolNo"
         android:textColor="@android:color/black"
         android:textSize="14sp"
@@ -59,14 +58,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:layout_alignParentTop="true"
-        android:ellipsize="marquee"
         android:singleLine="true"
-        android:layout_toRightOf="@+id/di_docNumber"
+        android:layout_toRightOf="@+id/di_docicon"
+        android:layout_below="@+id/di_docName"
         android:height="26dip"
         android:textColor="@android:color/black"
         android:layout_weight="2"
-        android:textSize="16sp"/>
+        android:textSize="14sp"/>
 
     <TextView
         android:id="@+id/di_docAgentName"
@@ -74,9 +72,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:ellipsize="marquee"
-        android:singleLine="true"
         android:layout_toRightOf="@+id/di_docicon"
-        android:layout_below="@+id/di_docName"
+        android:layout_toLeftOf="@+id/di_docSum"
+        android:layout_below="@+id/di_docDate"
         android:height="26dip"
         android:textColor="@android:color/black"
         android:layout_weight="2"
@@ -90,7 +88,6 @@
         android:ellipsize="marquee"
         android:layout_toRightOf="@+id/di_docicon"
         android:layout_below="@+id/di_docAgentName"
-        android:height="26dip"
         android:textColor="@android:color/black"
         android:textSize="10sp"/>
 

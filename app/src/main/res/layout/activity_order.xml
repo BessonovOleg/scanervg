@@ -77,19 +77,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnSelectEntityFromCatalog"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/shipping"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btnSelectEntityFromCatalog" />
+            android:background="@drawable/oval_background"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/btnScanEntityInOrder"
+            android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btnScanEntity" />
+            android:src="@drawable/barcode"
+            android:background="@drawable/oval_background"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
