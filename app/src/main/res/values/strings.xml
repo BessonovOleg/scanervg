@@ -48,6 +48,6 @@
     <string name="docNameSale">Реализация</string>
     <string name="btnSettingCaption">Настройки</string>
     <string name="errorInitDocument">Ошибка инициализации документа</string>
-
+    <string name="prefixDocDate">от</string>
 
 </resources>

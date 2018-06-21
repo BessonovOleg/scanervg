@@ -35,22 +35,6 @@ public class DatabaseManager {
         }
     }
 
-/*
-    public DatabaseManager(){
-
-         String dbUrl = "jdbc:jtds:sqlserver://192.168.99.103:1433/AccenVg";
-         String login = "admin";
-         String password = "123";
-         try {
-             Class.forName("net.sourceforge.jtds.jdbc.Driver");
-             connection = DriverManager.getConnection(dbUrl, login, password);
-         }catch (Exception e){
-             e.printStackTrace();
-         }
-
-    }
-*/
-
     public void connect() throws SQLException,ClassNotFoundException{
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -200,6 +184,8 @@ public class DatabaseManager {
                     result.setDocId(rs.getInt("DOCID"));
                     result.setDocMemo(rs.getString("DOCMEMO"));
                     result.setDocSum(rs.getDouble("DOCSUM"));
+                    result.setStrDocate(rs.getString("DOCDATE"));
+                    result.setDocNo(rs.getString("DOCNO"));
                 }
             }
         }catch (SQLException ex){

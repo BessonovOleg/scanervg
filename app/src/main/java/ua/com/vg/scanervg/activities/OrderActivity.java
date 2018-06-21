@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
 
     private int docID;
     private ProgressBar orderProgressBar;
-    private EditText edCustomer;
+    private TextView tvCustomer;
     private Document document;
     private EditText editTextOrderMemo;
     RecyclerView orderContents;
@@ -51,6 +52,8 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
     private int selectedPosition = -1;
     private final int EDIT_CONTENT_CODE = 1234;
     TextView orderDocSum;
+    TextView orderDocDate;
+    TextView orderDocNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +62,12 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
 
         TextView tvDocNo  = (TextView)     findViewById(R.id.tvOrderDocNo);
         orderProgressBar  = (ProgressBar)  findViewById(R.id.orderProgressBar);
-        edCustomer        = (EditText)     findViewById(R.id.edCustomer);
+        tvCustomer        = (TextView)     findViewById(R.id.tvCustomer);
         orderContents     = (RecyclerView) findViewById(R.id.orderContents);
         orderDocSum       = (TextView)     findViewById(R.id.orderDocSum);
         editTextOrderMemo = (EditText)     findViewById(R.id.editTextOrderMemo);
+        orderDocDate      = (TextView)     findViewById(R.id.tvOrderDocDate);
+        orderDocNo        = (TextView)     findViewById(R.id.tvOrderDocNo);
 
         ImageButton btnSelectEntityFromCatalog = (ImageButton) findViewById(R.id.btnSelectEntityFromCatalog);
         btnSelectEntityFromCatalog.setOnClickListener(new View.OnClickListener() {
@@ -81,40 +86,27 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
             tvDocNo.setText(document.getDocNo());
             Agent agentTo = document.getAgentTo();
             editTextOrderMemo.setText(document.getDocMemo());
+
             if(agentTo != null){
-                edCustomer.setText(agentTo.getName(),TextView.BufferType.EDITABLE);
+                tvCustomer.setText(agentTo.getName());
             }
         }
+        orderDocDate.setText(document.getStrDocate());
+        orderDocNo.setText(document.getDocNo());
 
         ImageButton btnFindCustomer = (ImageButton) findViewById(R.id.btnFindCustomer);
         btnFindCustomer.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                String findName = edCustomer.getText().toString();
-                if(findName.length() == 0){
-                    return;
-                }
                 AgentFinder agentFinder = new AgentFinder(orderProgressBar,OrderActivity.this);
                 List<Agent> agents = new ArrayList<>();
                 try{
-                    agentFinder.execute(findName);
+                    agentFinder.execute("*");
                     agents = agentFinder.get();
                 }catch (Exception e){
                     Toast.makeText(OrderActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
-
-                if(agents.size() > 0 ){
-                    Agent agent = new Agent(0,"");
-                    if(agents.size() == 1){
-                        agent = agents.get(0);
-                        document.setAgentTo(agent);
-                        edCustomer.setText(agent.getName());
-                    }else {
-                        selectAgentFromDialog(agents);
-                    }
-                }else {
-                    Toast.makeText(OrderActivity.this,R.string.msgAgentNotFound,Toast.LENGTH_SHORT).show();
-                }
+                 selectAgentFromDialog(agents);
             }
         });
 
@@ -170,7 +162,9 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         for(int i = 0;i<countRows;i++){
             docSum += orderContentsRVAdapter.getItem(i).getSum();
         }
-        orderDocSum.setText(NumberFormat.getCurrencyInstance().format(docSum));
+        String sum = new DecimalFormat("#0.00").format(docSum);
+        sum.replace(",",".");
+        orderDocSum.setText(sum);
         document.setDocSum(docSum);
     }
 
@@ -309,13 +303,13 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
             names.add(agent.getName());
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(OrderActivity.this);
-        builder.setTitle(R.string.captionDialogSelectEntity);
+        builder.setTitle(R.string.captionDialogSelectAgent);
         builder.setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Agent selectedAgent = agents.get(which);
                 document.setAgentTo(selectedAgent);
-                edCustomer.setText(selectedAgent.getName());
+                tvCustomer.setText(selectedAgent.getName());
                 dialog.dismiss();
             }
         });

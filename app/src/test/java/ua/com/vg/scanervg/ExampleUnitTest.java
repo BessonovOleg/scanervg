@@ -4,9 +4,11 @@ import org.junit.Test;
 
 import java.util.List;
 
+import ua.com.vg.scanervg.activities.DocContentEdit;
 import ua.com.vg.scanervg.activities.MainActivity;
 import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.documents.DocInfo;
+import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.model.Entity;
 
 import static org.junit.Assert.*;
@@ -22,17 +24,14 @@ public class ExampleUnitTest {
         assertEquals(4, 2 + 2);
     }
 
+    /*
     @Test
-    public void testDb(){
-      //  MainActivity mainActivity = new MainActivity();
-      //  DatabaseManager db = new DatabaseManager(mainActivity);
-     //   List<DocInfo> docInfoList = db.getDocList();
-
-   //     for(DocInfo d:docInfoList){
-     //       System.out.println(d.toString());
-      //  }
+    public void testDocDate(){
+        Document document = new Document();
+        assertEquals("2018.06.13",document.getStrDocate());
     }
-/*
+*/
+    /*
     @Test
     public void testGetNetPrice(){
 

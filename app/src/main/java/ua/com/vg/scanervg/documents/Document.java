@@ -1,10 +1,11 @@
 package ua.com.vg.scanervg.documents;
 
 import android.app.Application;
-import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ua.com.vg.scanervg.async.DocumentSaver;
@@ -22,7 +23,16 @@ public class Document {
     private double docSum;
     private String docNo;
     private DocumentsKind documentsKind;
-    
+    private String strDocate;
+
+    public String getStrDocate() {
+        return strDocate;
+    }
+
+    public void setStrDocate(String strDocate) {
+        this.strDocate = strDocate;
+    }
+
     public DocumentsKind getDocumentsKind() {
         return documentsKind;
     }
@@ -54,6 +64,12 @@ public class Document {
         agentFrom = new Agent(0,"");
         agentTo = new Agent(0,"");
         docNo = "";
+        setNowDate();
+    }
+
+    private void setNowDate(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+        strDocate = sdf.format(new Date());
     }
 
     private void calcDocSum(){

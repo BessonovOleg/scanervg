@@ -1,103 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="5dp"
     tools:context=".activities.OrderActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+ <RelativeLayout
+    android:id="@+id/orderCaptionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@drawable/border_for_order"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:padding="5dp">
 
         <TextView
+            android:id="@+id/txtOrderCaption"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/orderNoCaption"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tvOrderDocNo"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="20sp"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/txtOrderCaption"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
             android:textStyle="bold"
             android:paddingLeft="5dp"/>
 
-        <ProgressBar
-            android:id="@+id/orderProgressBar"
+        <TextView
+            android:id="@+id/tvOrderDocDatePrefix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            android:layout_toRightOf="@+id/tvOrderDocNo"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:text="@string/prefixDocDate"
+            android:paddingLeft="5dp"/>
 
         <TextView
+            android:id="@+id/tvOrderDocDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
+            android:layout_toRightOf="@+id/tvOrderDocDatePrefix"
+            android:layout_toLeftOf="@+id/btnFindCustomer"
+            android:singleLine="true"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:paddingLeft="5dp"/>
+
+
+        <TextView
+            android:id="@+id/txtCustomer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/txtOrderCaption"
             android:text="@string/customer"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/edCustomer"
+        <TextView
+            android:id="@+id/tvCustomer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_toRightOf="@+id/txtCustomer"
+            android:layout_below="@+id/txtOrderCaption"
             android:maxLength="255"
             android:maxLines="2"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
             android:paddingLeft="5dp" />
 
         <ImageButton
             android:id="@+id/btnFindCustomer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/oval_background"
             android:src="@android:drawable/ic_menu_search" />
-    </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/labelMakedEntity"
-        android:textColor="@android:color/black" />
+</RelativeLayout>
 
-    <LinearLayout
+<LinearLayout
+    android:id="@+id/orderSrcLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/orderCaptionLayout"
+    android:layout_above="@+id/orderFooterLayout"
+    android:layout_alignParentLeft="true"
+    android:orientation="vertical"
+    android:background="@drawable/border_for_order"
+    android:layout_weight="2"
+    android:padding="5dp"
+    android:layout_marginTop="5dp">
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/btnSelectEntityFromCatalog"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:src="@drawable/shipping"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
             android:background="@drawable/oval_background"/>
 
         <ImageButton
             android:id="@+id/btnScanEntityInOrder"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/btnSelectEntityFromCatalog"
             android:src="@drawable/barcode"
             android:background="@drawable/oval_background"/>
-    </LinearLayout>
+        <ProgressBar
+            android:id="@+id/orderProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="right"
+            android:layout_height="26dip"
+            android:visibility="invisible"/>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:id="@+id/orderContents"/>
 
     <LinearLayout
@@ -124,12 +169,17 @@
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
-
+</LinearLayout>
 
     <LinearLayout
+        android:id="@+id/orderFooterLayout"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="5dp"
+        android:background="@drawable/border_for_order"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
         <EditText
             android:id="@+id/editTextOrderMemo"
@@ -138,6 +188,7 @@
             android:layout_gravity="start"
             android:layout_weight="2"
             android:hint="@string/docmemo"
+            android:textSize="10sp"
             android:ems="15"
             android:inputType="text" />
 
@@ -146,8 +197,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:background="@drawable/oval_background"
             android:src="@android:drawable/ic_menu_save" />
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
