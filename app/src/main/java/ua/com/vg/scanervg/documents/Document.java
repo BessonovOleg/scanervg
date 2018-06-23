@@ -87,6 +87,36 @@ public class Document {
         this.makedEntity = makedEntity;
     }
 
+
+
+    public void addRowWithPrice(Entity entity,double qty,double price){
+        if (entity == null){
+            return;
+        }
+        int rowno = contentList.size() + 1;
+        boolean entExists = false;
+
+        RowContent row = new RowContent();
+        row.setRowno(rowno);
+        row.setEntity(entity);
+        row.setQty(qty);
+        row.setPrice(price);
+        row.setSum(qty * price);
+
+        for(RowContent rc:contentList){
+            if(rc.getEntity().equals(entity)){
+                rc.addQty(1);
+                entExists = true;
+            }
+        }
+        if(!entExists){
+            contentList.add(row);
+        }
+        calcDocSum();
+
+    }
+
+
     public void addRow(Entity entity,double qty){
         if (entity == null){
             return;
@@ -122,6 +152,7 @@ public class Document {
         row.setRowno(rowno);
         row.setEntity(entity);
         row.setQty(qty);
+
 
         for(RowContent rc:contentList){
             if(rc.getEntity().equals(entity)){
@@ -182,14 +213,16 @@ public class Document {
         this.docNo = docNo;
     }
 
-    public void save() throws IllegalStateException{
-
+    public int save() throws IllegalStateException{
+        int result = 0;
         DocumentSaver documentSaver = new DocumentSaver(documentsKind);
         try {
             documentSaver.execute(this);
+            result = documentSaver.get();
         }catch (Exception e){
             new IllegalStateException(e.getMessage());
         }
+        return result;
     }
 
     @Override

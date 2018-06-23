@@ -2,7 +2,10 @@ package ua.com.vg.scanervg;
 
 import org.junit.Test;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 import ua.com.vg.scanervg.activities.DocContentEdit;
 import ua.com.vg.scanervg.activities.MainActivity;
@@ -22,6 +25,14 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void testRoundDigit(){
+        Double d = 123.45;
+        DecimalFormatSymbols dcf = new DecimalFormatSymbols(Locale.US);
+        String result = new DecimalFormat("#0.00",dcf).format(d);
+        System.out.println(result);
     }
 
     /*

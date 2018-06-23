@@ -32,6 +32,18 @@ import ua.com.vg.scanervg.utils.DocumentsKind;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private static Context context;
     private SharedPreferences sp;
+    private static long back_pressed;
+
+    @Override
+    public void onBackPressed() {
+        if(back_pressed + 2000 > System.currentTimeMillis()){
+            super.onBackPressed();
+        }else{
+            //TODO когда нибудь возможно заменить на внутреннюю надпись, которая по таймеру исчезнет
+            Toast.makeText(this,R.string.exitPrompt,Toast.LENGTH_SHORT).show();
+        }
+        back_pressed = System.currentTimeMillis();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

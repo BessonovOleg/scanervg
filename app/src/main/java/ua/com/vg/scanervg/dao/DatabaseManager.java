@@ -181,11 +181,17 @@ public class DatabaseManager {
                     makedEntity.setEntCode(rs.getString("ENTCODE"));
                     result.setMakedEntity(makedEntity);
 
+                    Agent agent = new Agent();
+                    agent.setId(rs.getInt("AGID"));
+                    agent.setName(rs.getString("AGNAME"));
+                    result.setAgentTo(agent);
+
                     result.setDocId(rs.getInt("DOCID"));
                     result.setDocMemo(rs.getString("DOCMEMO"));
                     result.setDocSum(rs.getDouble("DOCSUM"));
                     result.setStrDocate(rs.getString("DOCDATE"));
                     result.setDocNo(rs.getString("DOCNO"));
+
                 }
             }
         }catch (SQLException ex){
@@ -266,12 +272,17 @@ public class DatabaseManager {
 
         //Save caption
         try{
-            ps = connection.prepareStatement("exec AndroidUpdateDocuments ?,?,?,?");
+            ps = connection.prepareStatement("exec AndroidUpdateDocuments ?,?,?,?,?");
             ps.setInt(1,document.getDocId());
             ps.setString(2,document.getDocMemo());
             ps.setInt(3,documentKindNumber);
             ps.setDouble(4,document.getDocSum());
 
+            if(document.getAgentTo() != null){
+               ps.setString(5,document.getAgentTo().getName());
+            }else{
+               ps.setString(5,"");
+            }
 
             rs = ps.executeQuery();
             if (rs != null) {
@@ -290,7 +301,6 @@ public class DatabaseManager {
                 }
             }
         }
-
 
         //Save contents
         if(rowContents.size() > 0){

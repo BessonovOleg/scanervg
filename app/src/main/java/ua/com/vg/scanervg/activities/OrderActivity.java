@@ -37,6 +37,7 @@ import ua.com.vg.scanervg.async.PriceLoader;
 import ua.com.vg.scanervg.model.Agent;
 import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.model.Entity;
+import ua.com.vg.scanervg.utils.AppUtils;
 import ua.com.vg.scanervg.utils.DocumentsKind;
 import ua.com.vg.scanervg.utils.ScanKind;
 
@@ -122,8 +123,11 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         btnSaveOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                orderProgressBar.setVisibility(ProgressBar.VISIBLE);
                 try{
-                    document.save();
+                    if (document.save() == 1){
+                        finish();
+                    }
                 }catch (Exception e){
                     Toast.makeText(OrderActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
@@ -162,9 +166,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
         for(int i = 0;i<countRows;i++){
             docSum += orderContentsRVAdapter.getItem(i).getSum();
         }
-        String sum = new DecimalFormat("#0.00").format(docSum);
-        sum.replace(",",".");
-        orderDocSum.setText(sum);
+        orderDocSum.setText(AppUtils.roundAndConvertToStringDigit(docSum));
         document.setDocSum(docSum);
     }
 
@@ -286,7 +288,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Entity selectedEntity = entities.get(which);
-                    document.addRow(selectedEntity,1);
+                    document.addRowWithPrice(selectedEntity,1,getEntPrice(selectedEntity));
                     orderContentsRVAdapter.notifyDataSetChanged();
                     calcAndDrawDocSum();
                     dialog.dismiss();

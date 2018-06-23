@@ -13,6 +13,7 @@ import java.util.List;
 
 import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.documents.DocInfo;
+import ua.com.vg.scanervg.utils.AppUtils;
 
 
 public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocInfoViewHolder> {
@@ -36,9 +37,7 @@ public class DocInfoRVAdapter extends RecyclerView.Adapter<DocInfoRVAdapter.DocI
         holder.docAgent.setText(docInfo.getDocAgentName());
         holder.docDate.setText(docInfo.getStrDocDate());
         if(docInfo.getDocSum() != 0){
-            String sum =  new DecimalFormat("#0.00").format(docInfo.getDocSum());
-            sum.replace(",",".");
-            holder.docSum.setText(sum);
+            holder.docSum.setText(AppUtils.roundAndConvertToStringDigit(docInfo.getDocSum()));
         }
     }
 

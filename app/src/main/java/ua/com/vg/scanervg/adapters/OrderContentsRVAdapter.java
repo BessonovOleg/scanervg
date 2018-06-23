@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import ua.com.vg.scanervg.R;
 import ua.com.vg.scanervg.documents.RowContent;
+import ua.com.vg.scanervg.utils.AppUtils;
 
 public class OrderContentsRVAdapter extends RecyclerView.Adapter<OrderContentsRVAdapter.OrderContentsViewHolder>{
     private List<RowContent> mRowContentsList;
@@ -59,9 +61,9 @@ public class OrderContentsRVAdapter extends RecyclerView.Adapter<OrderContentsRV
         RowContent rowContent = mRowContentsList.get(position);
         holder.entNameOrderContent.setText(rowContent.getEntName());
         holder.unitOrderContent.setText(rowContent.getUnitName());
-        holder.qtyOrderContent.setText(String.valueOf(rowContent.getQty()));
-        holder.priceOrderContent.setText(String.valueOf(rowContent.getPrice()));
-        holder.sumOrderContent.setText(String.valueOf(rowContent.getSum()));
+        holder.qtyOrderContent.setText(AppUtils.roundAndConvertToStringDigit(rowContent.getQty()));
+        holder.priceOrderContent.setText(AppUtils.roundAndConvertToStringDigit(rowContent.getPrice()));
+        holder.sumOrderContent.setText(AppUtils.roundAndConvertToStringDigit(rowContent.getSum()));
     }
 
     @Override

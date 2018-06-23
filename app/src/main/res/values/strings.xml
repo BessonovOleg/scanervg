@@ -49,5 +49,6 @@
     <string name="btnSettingCaption">Настройки</string>
     <string name="errorInitDocument">Ошибка инициализации документа</string>
     <string name="prefixDocDate">от</string>
+    <string name="exitPrompt">Нажмите еще раз для выхода</string>
 
 </resources>

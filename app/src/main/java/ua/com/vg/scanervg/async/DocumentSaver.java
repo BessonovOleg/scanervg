@@ -10,7 +10,7 @@ import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.utils.DocumentsKind;
 
-public class DocumentSaver extends AsyncTask<Document,Void,Void>{
+public class DocumentSaver extends AsyncTask<Document,Void,Integer>{
     private String errorMessage = "";
     private DocumentsKind documentsKind;
 
@@ -24,12 +24,12 @@ public class DocumentSaver extends AsyncTask<Document,Void,Void>{
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(Integer v) {
+        super.onPostExecute(v);
     }
 
     @Override
-    protected Void doInBackground(Document... documents) {
+    protected Integer doInBackground(Document... documents) {
         try {
             Context ctx = MainActivity.getContext();
             DatabaseManager dbDatabaseManager = new DatabaseManager(ctx);
@@ -37,6 +37,6 @@ public class DocumentSaver extends AsyncTask<Document,Void,Void>{
         }catch (Exception e){
             new IllegalStateException(e.getMessage());
         }
-        return null;
+        return 1;
     }
 }
