@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -38,13 +41,15 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
     private final int EDIT_CONTENT_CODE = 1234;
     private int selectedPosition = -1;
     private InventContentRVAdapter inventContentRVAdapter;
+    private RecyclerView inventarizationContents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventarization);
-        inventProgressBar = (ProgressBar) findViewById(R.id.inventProgressbar);
+        inventProgressBar       = (ProgressBar) findViewById(R.id.inventProgressbar);
         lbSubdivInventarization = (TextView) findViewById(R.id.lbSubdivInventarization);
+        inventarizationContents = (RecyclerView) findViewById(R.id.inventarizationContents);
 
         Intent intent = getIntent();
         docID = intent.getIntExtra("DOCID",0);
@@ -66,13 +71,34 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
             }
         });
 
+        ImageButton btnScanInvent = (ImageButton) findViewById(R.id.btnScanInvent);
+        btnScanInvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scan();
+            }
+        });
+
         ImageButton btnSaveInventarization = (ImageButton) findViewById(R.id.btnSaveInventarization);
         btnSaveInventarization.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                document.save();
+                inventProgressBar.setVisibility(ProgressBar.VISIBLE);
+                try{
+                    if (document.save() == 1){
+                        finish();
+                    }
+                }catch (Exception e){
+                    Toast.makeText(InventarizationActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                }
             }
         });
+
+        inventContentRVAdapter = new InventContentRVAdapter(this,document.getContentList());
+        inventContentRVAdapter.setClickListener(this);
+        inventarizationContents.setLayoutManager(new LinearLayoutManager(this));
+        inventarizationContents.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        inventarizationContents.setAdapter(inventContentRVAdapter);
 
     }
 
@@ -117,8 +143,10 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
                     Entity entity = new Entity(0,"","");
                     if(entities.size() == 1){
                         entity = entities.get(0);
-                        document.addDistinctRow(entity,1);
-                        inventContentRVAdapter.notifyDataSetChanged();
+                        if(entity.getEntid()>0){
+                            document.addDistinctRow(entity,1);
+                            inventContentRVAdapter.notifyDataSetChanged();
+                        }
                     }else {
                         selectEntityFromDialog(entities);
                     }
