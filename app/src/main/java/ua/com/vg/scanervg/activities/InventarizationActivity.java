@@ -61,6 +61,10 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
             if(agentTo != null){
                 lbSubdivInventarization.setText(agentTo.getName());
             }
+
+            if(document!= null){
+                document.setDocumentsKind(DocumentsKind.Inventorization);
+            }
         }
 
         Button btnInventSelectSubdiv = (Button) findViewById(R.id.btnInventSelectSubdiv);
@@ -99,7 +103,6 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
         inventarizationContents.setLayoutManager(new LinearLayoutManager(this));
         inventarizationContents.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         inventarizationContents.setAdapter(inventContentRVAdapter);
-
     }
 
 
@@ -124,6 +127,11 @@ public class InventarizationActivity extends AppCompatActivity implements Invent
             if(resultCode == RESULT_FIRST_USER){
                 inventContentRVAdapter.removeItem(selectedPosition);
                 selectedPosition = -1;
+                return;
+            }if(data != null && selectedPosition > -1){
+                double qty = Double.valueOf(data.getStringExtra("QTY"));
+                inventContentRVAdapter.getItem(selectedPosition).setQty(qty);
+                inventContentRVAdapter.notifyDataSetChanged();
                 return;
             }
         }

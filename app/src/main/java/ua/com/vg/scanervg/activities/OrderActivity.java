@@ -91,6 +91,10 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
             if(agentTo != null){
                 tvCustomer.setText(agentTo.getName());
             }
+
+            if(document!= null){
+                document.setDocumentsKind(DocumentsKind.Order);
+            }
         }
         orderDocDate.setText(document.getStrDocate());
         orderDocNo.setText(document.getDocNo());
@@ -202,6 +206,7 @@ public class OrderActivity extends AppCompatActivity implements OrderContentsRVA
             if(resultCode == RESULT_FIRST_USER){
                 orderContentsRVAdapter.removeItem(selectedPosition);
                 selectedPosition = -1;
+                document.recalcRowNoInContentList();
                 calcAndDrawDocSum();
                 return;
             }else if(data != null && selectedPosition > -1){

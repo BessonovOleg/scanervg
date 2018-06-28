@@ -79,6 +79,14 @@ public class Document {
         }
     }
 
+    public void recalcRowNoInContentList(){
+        int rowno = 1;
+        for(RowContent row:contentList){
+            row.setRowno(rowno);
+            rowno++;
+        }
+    }
+
     public Entity getMakedEntity() {
         return makedEntity;
     }

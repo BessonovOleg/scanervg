@@ -230,6 +230,7 @@ public class DatabaseManager {
                     rowContent.setPrice(rs.getDouble("PRICE"));
                     rowContent.setSum(rs.getDouble("SUMM"));
 
+
                     rowContents.add(rowContent);
                 }
             }
@@ -304,7 +305,6 @@ public class DatabaseManager {
 
         //Save contents
         if(rowContents.size() > 0){
-
             for(RowContent rc:rowContents){
                 try{
                     ps = connection.prepareStatement("exec AndroidUpdateJournal ?,?,?,?,?,?,?,?,?,?");
@@ -319,6 +319,7 @@ public class DatabaseManager {
                     ps.setInt(9,rc.getEntity().getSeriesId());
                     ps.setInt(10,document.getAgentTo().getId());
                     ps.executeUpdate();
+                    System.out.println(rc.getRowno());
                 }catch (SQLException ex){
                     throw new RuntimeException(ex);
                 }finally {

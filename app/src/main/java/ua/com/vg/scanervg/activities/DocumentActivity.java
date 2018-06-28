@@ -30,6 +30,7 @@ import ua.com.vg.scanervg.dao.DatabaseManager;
 import ua.com.vg.scanervg.adapters.DocContentsRVAdapter;
 import ua.com.vg.scanervg.documents.Document;
 import ua.com.vg.scanervg.model.Entity;
+import ua.com.vg.scanervg.utils.DocumentsKind;
 import ua.com.vg.scanervg.utils.ScanKind;
 
 public class DocumentActivity extends AppCompatActivity implements DocContentsRVAdapter.ItemClickListener{
@@ -93,7 +94,13 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
             document = new Document();
         }else {
             document = getDocumentByID(docID);
+
+            if(document!= null){
+                document.setDocumentsKind(DocumentsKind.Manufacture);
+            }
         }
+
+
 
         if(document.getMakedEntity() != null){
             lbMakedEntity.setText(document.getMakedEntity().getEntname());
@@ -111,8 +118,9 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
     private void saveDocument(){
         document.setDocMemo(editTextDocMemo.getText().toString());
         try {
-            dbSaveDocument = new DbSaveDocument(ctx);
-            dbSaveDocument.execute(document);
+            if (document.save() == 1){
+                finish();
+            }
         }catch (Exception e){
             Toast.makeText(DocumentActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
         }
@@ -160,6 +168,7 @@ public class DocumentActivity extends AppCompatActivity implements DocContentsRV
             if(resultCode == RESULT_FIRST_USER){
                 docContentsRVAdapter.removeItem(selectedPosition);
                 selectedPosition = -1;
+                document.recalcRowNoInContentList();
                 return;
             }else if(data != null && selectedPosition > -1){
                 double qty = Double.valueOf(data.getStringExtra("QTY"));
